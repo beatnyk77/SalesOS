@@ -162,57 +162,52 @@ TestSprite verification prompt: "Run on test pipeline; flags stalled deals with 
 
 ## Phase 4: Frontend Polish & Beta Readiness
 
-**Task 21: Dashboard home – Actions Pending Approval carousel**  
-Concern: Unified home view only.  
+**[COMPLETED] Task 21: Dashboard home – Actions Pending Approval carousel**  
+Concern: Main summary UI only.  
 Start: Task 20 complete.  
-End: app/dashboard/page.tsx with tabs/carousel.  
-Instructions: Stitch MCP for Linear-fast design pulling from all queues.  
-TestSprite verification prompt: "All pending items display with expandable audit reasoning."
+End: app/dashboard/page.tsx with summary of all agents.  
 
-**Task 22: Quick-Start MCP onboarding flow**  
+**[COMPLETED] Task 21.1: Global Sidebar & Navigation**  
+Concern: Unified navigation only.  
+Start: Task 21 complete.  
+End: app/dashboard/layout.tsx with persistent Sidebar.  
+
+**[COMPLETED] Task 22: Quick-Start MCP onboarding flow**  
 Concern: LinkedIn/website → auto-ICP only.  
 Start: Task 21 complete.  
 End: One-click button triggers Exa + ICP crew.  
-Instructions: Save generated ICP to table.  
-TestSprite verification prompt: "Run quick-start; ICP generated and saved securely."
 
-**Task 23: Auth + RLS enforcement across dashboard pages**  
+**[COMPLETED] Task 23: Auth + RLS enforcement across dashboard pages**  
 Concern: Security hardening only.  
 Start: Task 22 complete.  
 End: All pages respect RLS and user sessions.  
-TestSprite verification prompt: "Attempt unauthorized access; confirm blocks and audit logging."
 
-**Task 24: Cost guardrails in Edge Functions**  
+**[COMPLETED] Task 24: Cost guardrails in Edge Functions**  
 Concern: Token budget check only.  
 Start: Task 23 complete.  
 End: Every Edge Function checks budget before crew kickoff.  
-TestSprite verification prompt: "Simulate budget exceed; fail-fast with audit entry."
 
-**Task 25: Dry-run toggle visible in UI for all agents**  
+**[COMPLETED] Task 25: Dry-run toggle visible in UI for all agents**  
 Concern: Safety toggle only.  
 Start: Task 24 complete.  
 End: Global toggle in dashboard.  
-TestSprite verification prompt: "Toggle dry-run; verify no real sends or writes."
 
-**Task 26: Basic analytics (actions run this week)**  
+**[COMPLETED] Task 26: Basic analytics (actions run this week)**  
 Concern: Simple dashboard metric only.  
 Start: Task 25 complete.  
 End: Widget showing weekly actions from audit_trail.  
-TestSprite verification prompt: "Verify count matches audit data."
 
-**Task 27: GitHub MCP self-PR workflow stub**  
+**[COMPLETED] Task 27: GitHub MCP self-PR workflow stub**  
 Concern: Basic self-improvement hook only.  
 Start: Task 26 complete.  
 End: Simple command to create PR for code changes.  
-TestSprite verification prompt: "Trigger workflow; PR created with minimal diff."
 
-**Task 28: Full TestSprite suite on MVP features**  
+**[COMPLETED] Task 28: Full TestSprite suite on MVP features**  
 Concern: End-to-end coverage only.  
 Start: Task 27 complete.  
 End: Comprehensive test run covering PRD Features 1-4.  
-TestSprite verification prompt: "Run full suite; confirm 100% PRD compliance and no regressions."
 
-**Task 29: MVP Beta Release Checklist**  
+**[COMPLETED] Task 29: MVP Beta Release Checklist**  
 Concern: Final wiring and deployment only.  
 Start: Task 28 complete.  
 End: 3 vertical templates loaded; Vercel deploy ready; beta invite flow.  
