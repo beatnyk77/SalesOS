@@ -7,12 +7,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { supabase } from '../../lib/supabase/client';
 
 export default function DryRunToggle() {
   const [isDryRun, setIsDryRun] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const supabase = createClientComponentClient();
+  // Use the pre-configured singleton client
 
   useEffect(() => {
     async function fetchSettings() {
