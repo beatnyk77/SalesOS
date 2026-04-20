@@ -1,0 +1,55 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "serverUrl": "https://mcp.supabase.com/mcp"
+    },
+    "exa": {
+      "serverUrl": "https://mcp.exa.ai/mcp"
+    },
+    "hunter": {
+      "serverUrl": "https://mcp.hunter.io/mcp"
+    },
+    "github-mcp-server": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "REPLACE_WITH_SCOPED_GITHUB_PAT"
+      }
+    },
+    "hubspot": {
+      "command": "npx",
+      "args": ["-y", "@hubspot/mcp-server"],
+      "env": {
+        "PRIVATE_APP_ACCESS_TOKEN": "REPLACE_WITH_HUBSPOT_PRIVATE_APP_TOKEN"
+      }
+    },
+    "gmail": {
+      "command": "npx",
+      "args": ["-y", "@shinzolabs/gmail-mcp"],
+      "env": {
+        "GMAIL_CREDENTIALS_PATH": "REPLACE_WITH_GMAIL_CREDENTIALS_PATH"
+      }
+    },
+    "stitch": {
+      "command": "npx",
+      "args": ["-y", "@_davideast/stitch-mcp", "proxy"],
+      "env": {
+        "STITCH_API_KEY": "REPLACE_WITH_STITCH_API_KEY"
+      }
+    },
+    "testsprite": {
+      "command": "npx",
+      "args": ["-y", "@testsprite/testsprite-mcp@latest"],
+      "env": {
+        "API_KEY": "REPLACE_WITH_TESTSPRITE_API_KEY"
+      }
+    }
+  }
+}
