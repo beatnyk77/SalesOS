@@ -125,35 +125,35 @@ TestSprite verification prompt: "Upload test CSV; confirm processing and queue p
 
 ## Phase 3: Meeting Prep Brief + Proposal Auto-Drafter
 
-**Task 16: Meeting Prep Brief Crew**  
+**[COMPLETED] Task 16: Meeting Prep Brief Crew**  
 Concern: Trigger → 1-page brief only.  
 Start: Task 15 complete.  
 End: lib/agents/crews/meeting-prep.ts complete.  
 Instructions: Pull CRM + Exa; structured output.  
 TestSprite verification prompt: "Generate brief for test meeting; matches PRD one-page format."
 
-**Task 17: Proposal templates with metadata RAG**  
+**[COMPLETED] Task 17: Proposal templates with metadata RAG**  
 Concern: Metadata filtering query only.  
 Start: Task 16 complete.  
 End: lib/rag/proposal-rag.ts with @> filter.  
 Instructions: Enforce industry/deal_size/service_type matching.  
 TestSprite verification prompt: "Query returns only matching templates; no cross-client contamination."
 
-**Task 18: Proposal Auto-Drafter Crew**  
+**[COMPLETED] Task 18: Proposal Auto-Drafter Crew**  
 Concern: Input → full draft using RAG only.  
 Start: Task 17 complete.  
 End: lib/agents/crews/proposal-drafter.ts complete.  
 Instructions: Use metadata RAG; 90%+ fidelity.  
 TestSprite verification prompt: "Draft proposal on test data; verify template fidelity and audit trail."
 
-**Task 19: Proposal UI + editable output**  
+**[COMPLETED] Task 19: Proposal UI + editable output**  
 Concern: Drafter interface only.  
 Start: Task 18 complete.  
 End: app/dashboard/proposals/page.tsx with form + output.  
 Instructions: Stitch-generated.  
 TestSprite verification prompt: "Generate + edit proposal; saves draft correctly."
 
-**Task 20: Pipeline Health Monitor cron Edge Function (starter)**  
+**[COMPLETED] Task 20: Pipeline Health Monitor cron Edge Function (starter)**  
 Concern: Daily scan + flag only.  
 Start: Task 19 complete.  
 End: supabase/functions/pipeline-monitor/index.ts (basic version).  
