@@ -361,6 +361,20 @@ tasks. TestSprite: "Handoff generated with full context from audit trail."
 Task 42 done. End: New section in carousel/sidebar for team handoffs.
 TestSprite: "End-to-end call prep → handoff visible and assignable."
 
+Phase E: Advanced Qualification & Closing (Tasks 44–46)
+
+**[COMPLETED] Task 44: Negotiation Crew** Concern: Draft justifications for objections based on RAG.
+Start: Task 43 done. End: negotiation-handler.ts.
+TestSprite: "Objection handled with ROI collateral justification."
+
+**[COMPLETED] Task 45: Contract Generation Crew & Table** Concern: Create contracts table and generator logic.
+Start: Task 44 done. End: contracts table + contract-generator.ts.
+TestSprite: "Contract generated with lead details and agreed terms."
+
+**[COMPLETED] Task 46: Closing & Contracts Dashboard** Concern: UI for negotiation review and contract downloads.
+Start: Task 45 done. End: /dashboard/closing page.
+TestSprite: "Contract visible in dashboard and downloadable as Markdown/PDF draft."
+
 **Additional Security Reminders Across All Tasks:**
 
 - Never expose SUPABASE_SERVICE_ROLE_KEY to frontend (Task 1 enforcement).
