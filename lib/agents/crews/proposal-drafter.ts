@@ -15,6 +15,7 @@
 
 import { logToAuditTrail } from '../utils';
 import { queryProposalTemplates, ProposalFilter } from '../rag/proposal-rag';
+import { CollateralRAGCrew } from './collateral-rag';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -32,6 +33,7 @@ export interface ProposalDraft {
   content: string;
   metadata_applied: ProposalFilter;
   template_used_id: string;
+  collateral_referenced?: string[];
 }
 
 export interface ProposalDrafterOutput {
@@ -75,14 +77,34 @@ export class ProposalDrafterCrew {
         metadata: {}
       };
 
-      // 3. Draft Proposal (Deterministic variable injection for MVP)
+      // 3. Collateral RAG: Retrieve relevant collateral snippets
+      const collateralCrew = new CollateralRAGCrew();
+      const collateralResult = await collateralCrew.run({
+        user_id,
+        filter: {
+          industry: filter.industry,
+          deal_stage: 'Proposal',
+          document_type: 'Case Study'
+        },
+        limit: 2
+      });
+
+      let collateralSnippet = '';
+      if (collateralResult.success && collateralResult.collateral.length > 0) {
+        collateralSnippet = '\n\n## Relevant Case Studies & Proof Points\n';
+        collateralResult.collateral.forEach(c => {
+          collateralSnippet += `\n### ${c.file_name}\n${c.content.substring(0, 300)}...\n[View full document](${c.file_path})\n`;
+        });
+      }
+
+      // 4. Draft Proposal (Deterministic variable injection for MVP)
       // In production, this would call an LLM with the template as context.
       const draftedContent = template.content
         .replace(/{{project_title}}/g, project_title)
         .replace(/{{client_name}}/g, client_name)
         .replace(/{{project_description}}/g, project_description);
 
-      // Add a header for the draft
+      // Add a header for the draft and the collateral snippet
       const finalContent = `
 # ${project_title}
 **Client:** ${client_name}
@@ -91,6 +113,8 @@ export class ProposalDrafterCrew {
 ---
 
 ${draftedContent}
+
+${collateralSnippet}
 
 ---
 *Drafted by SalesOS AI Proposal Agent*
@@ -101,10 +125,11 @@ ${draftedContent}
         client: client_name,
         content: finalContent,
         metadata_applied: filter,
-        template_used_id: template.id
+        template_used_id: template.id,
+        collateral_referenced: collateralResult.collateral.map(c => c.file_name)
       };
 
-      // 4. Audit: Success
+      // 5. Audit: Success
       await logToAuditTrail({
         userId: user_id,
         agentName: 'proposal_drafter_crew',
@@ -113,7 +138,8 @@ ${draftedContent}
           client_name, 
           project_title, 
           template_used: template.name,
-          metadata_match: templates.length > 0
+          metadata_match: templates.length > 0,
+          collateral_added: collateralResult.collateral.length
         },
       });
 

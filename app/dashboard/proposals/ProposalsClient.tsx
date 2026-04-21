@@ -16,6 +16,7 @@
 import { useState } from 'react';
 import { draftProposalAction, saveProposalAction } from './actions';
 import { ProposalDraft } from '../../../lib/agents/crews/proposal-drafter';
+import { CollateralCarousel } from '../../../components/ui/CollateralCarousel';
 
 interface ProposalsClientProps {
   userId: string;
@@ -239,12 +240,16 @@ export default function ProposalsClient({ userId }: ProposalsClientProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <p className="text-zinc-500 max-w-[240px]">
-                  Fill out the project details on the left to generate a personalized proposal.
-                </p>
               </div>
             )}
           </div>
+          
+          {/* Collateral Carousel */}
+          {draft?.collateral_referenced && draft.collateral_referenced.length > 0 && (
+            <div className="px-6 pb-6 border-t border-zinc-800/50 bg-zinc-900/50">
+              <CollateralCarousel items={draft.collateral_referenced} />
+            </div>
+          )}
         </div>
       </div>
     </div>

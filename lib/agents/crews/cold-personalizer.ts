@@ -20,6 +20,8 @@
 
 import { getSupabaseServer } from '../../supabase/server';
 import { logToAuditTrail } from '../utils';
+import { CollateralRAGCrew } from './collateral-rag';
+import { Collateral } from '../rag/collateral-rag';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -52,13 +54,12 @@ export interface ColdPersonalizerOutput {
 // ─── Copywriter Agent (LLM-based personalization) ─────────────────────────────
 
 /**
- * Generates a personalized cold email using research data.
- * In production, this would call an LLM endpoint.
- * Currently uses template-based generation for deterministic testing.
+ * Generates a personalized cold email using research data and relevant collateral.
  */
 function generatePersonalizedEmail(
   lead: ColdEmailInput,
-  researchData: Record<string, any>
+  researchData: Record<string, any>,
+  collateral: Collateral[] = []
 ): PersonalizedEmail {
   const firstName = lead.first_name || lead.email.split('@')[0];
   const company = lead.company_name || researchData?.company || 'your company';
@@ -74,7 +75,7 @@ function generatePersonalizedEmail(
     signals.push(`tech: ${researchData.tech_stack.join(', ')}`);
   if (recentNews) signals.push(`recent: ${recentNews}`);
 
-  // Personalized opener — uses the most compelling research signal
+  // Personalized opener
   let opener: string;
   if (recentNews) {
     opener = `Hi ${firstName}, I noticed ${company} recently ${recentNews.toLowerCase()} — congratulations! That kind of momentum is exactly what makes outbound even harder to keep up with.`;
@@ -84,7 +85,14 @@ function generatePersonalizedEmail(
     opener = `Hi ${firstName}, I've been following ${company}'s work in ${industry} and wanted to reach out with an idea that might save your team 10+ hours a week.`;
   }
 
-  const body = `${opener}
+  // Collateral injection
+  let collateralSection = '';
+  if (collateral.length > 0) {
+    const mainDoc = collateral[0];
+    collateralSection = `\n\nI thought you might find our ${mainDoc.metadata.document_type || 'latest resource'} on ${mainDoc.metadata.industry || 'this industry'} useful. It covers how we helped similar teams solve their outreach challenges.`;
+  }
+
+  const body = `${opener}${collateralSection}
 
 We built SalesOS specifically for teams like yours — an AI co-founder that handles lead qualification, personalized outreach, and proposal drafting so you can focus on closing.
 
@@ -99,6 +107,7 @@ The SalesOS Team`;
 
   const full_html = `<div style="font-family: -apple-system, sans-serif; font-size: 14px; line-height: 1.6; color: #1a1a1a;">
 <p>${opener}</p>
+${collateralSection ? `<p>${collateralSection.trim()}</p>` : ''}
 <p>We built SalesOS specifically for teams like yours — an AI co-founder that handles lead qualification, personalized outreach, and proposal drafting so you can focus on closing.</p>
 <p>Would it make sense to chat for 15 minutes this week? I'd love to show you how it works.</p>
 <p>Best,<br/>The SalesOS Team</p>
@@ -186,13 +195,32 @@ export class ColdEmailPersonalizerCrew {
         }
       }
 
-      // ── 2. Generate Personalized Emails ────────────────────────────────────
+      // ── 2. Retrieve Collateral for the batch (General industry or specific if possible) ──
+      const collateralCrew = new CollateralRAGCrew();
+      const collateralResult = await collateralCrew.run({
+        user_id: this.userId,
+        filter: { 
+          // For batch, we take the most common industry or just fetch general items
+          document_type: 'Case Study' 
+        },
+        limit: 5
+      });
+      const availableCollateral = collateralResult.success ? collateralResult.collateral : [];
+
+      // ── 3. Generate Personalized Emails ────────────────────────────────────
       for (const lead of leads) {
         try {
           const research = researchMap.get(lead.email) || {};
-          const email = generatePersonalizedEmail(lead, research);
+          
+          // Filter collateral for this specific lead's industry if available
+          const leadIndustry = research.industry;
+          const leadCollateral = leadIndustry 
+            ? availableCollateral.filter(c => c.metadata.industry === leadIndustry)
+            : availableCollateral;
 
-          // ── 3. Persist to cold_emails table (dry-run safe) ──────────────
+          const email = generatePersonalizedEmail(lead, research, leadCollateral);
+
+          // ── 4. Persist to cold_emails table (dry-run safe) ──────────────
           const { error: insertError } = await supabase.from('cold_emails').insert({
             user_id: this.userId,
             lead_email: lead.email,
