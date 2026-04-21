@@ -328,18 +328,18 @@ progress bar update as evaluators finish batch chunks."
 
 Phase C: WhatsApp Integration for Follow-Ups & Prospecting (Tasks 37–39)
 
-**Task 37: Add whatsapp-mcp to Antigravity config** Concern: MCP connection only
+**[COMPLETED] Task 37: Add whatsapp-mcp to Antigravity config** Concern: MCP connection only
 (use your existing fork). Start: Task 36 done. End: Config updated; basic
 send/receive tools available. Instructions: Add consent field in leads table.
 TestSprite: "MCP healthy; dry-run message generation works."
 
-**Task 38: WhatsApp Nurturer Crew** Concern: Personalized follow-up logic only
+**[COMPLETED] Task 38: WhatsApp Nurturer Crew** Concern: Personalized follow-up logic only
 (trigger on stall or post-proposal). Start: Task 37 done. End: Crew that
 generates + queues WhatsApp messages (dry-run). Instructions: Use metadata from
 collateral/ICP. TestSprite: "Generate follow-up for stalled lead; audit trail
 includes reasoning."
 
-**Task 39: WhatsApp UI + approval flow** Concern: Messages appear in carousel
+**[COMPLETED] Task 39: WhatsApp UI + approval flow** Concern: Messages appear in carousel
 only. Start: Task 38 done. End: New approval type in dashboard. TestSprite:
 "Approve WhatsApp message; logs to audit without sending." Phase D: Voice/Call
 Prep & Team Collaboration & Handoff Module (Tasks 40–43)
