@@ -25,7 +25,7 @@ export class WhatsAppNurturerCrew {
 
   constructor(userId: string) {
     this.userId = userId;
-    this.collateralCrew = new CollateralRAGCrew(userId);
+    this.collateralCrew = new CollateralRAGCrew();
   }
 
   async run(input: WhatsAppNurturerInput): Promise<WhatsAppMessageDraft> {
@@ -49,8 +49,11 @@ export class WhatsAppNurturerCrew {
     // 2. Fetch Relevant Collateral based on Lead's industry or metadata
     const industry = lead.research_payload?.industry || lead.metadata?.industry || '';
     const collateralResult = await this.collateralCrew.run({
-      query: `Find relevant case studies or pitch decks for ${industry}`,
-      deal_stage: input.context === 'post-proposal' ? 'Proposal' : undefined
+      user_id: this.userId,
+      filter: {
+        industry: industry,
+        deal_stage: input.context === 'post-proposal' ? 'Proposal' : undefined
+      }
     });
 
     // 3. Generate Message (Simulated LLM Writer Agent)

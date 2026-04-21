@@ -59,7 +59,7 @@ export default async function DashboardPage() {
   const carouselActions = [
     ...(leadActions || []).map(l => ({
       id: l.id,
-      type: 'lead',
+      type: 'lead' as const,
       title: l.company_name || 'New Lead',
       subtitle: `Qualification needed for ${l.email}`,
       description: l.summary || 'Lead waiting for scoring and ICP matching review.',
@@ -68,7 +68,7 @@ export default async function DashboardPage() {
     })),
     ...(emailActions || []).map(e => ({
       id: e.id,
-      type: 'email',
+      type: 'email' as const,
       title: 'Email Draft Ready',
       subtitle: `To: ${e.lead_email}`,
       description: e.subject,

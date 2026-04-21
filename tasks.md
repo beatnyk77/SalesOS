@@ -344,20 +344,20 @@ only. Start: Task 38 done. End: New approval type in dashboard. TestSprite:
 "Approve WhatsApp message; logs to audit without sending." Phase D: Voice/Call
 Prep & Team Collaboration & Handoff Module (Tasks 40–43)
 
-**Task 40: Add audio-transcription-mcp (or equivalent)** Concern: MCP for voice
+**[COMPLETED] Task 40: Add audio-transcription-mcp (or equivalent)** Concern: MCP for voice
 only. Start: Task 39 done. End: Config updated for transcription. TestSprite:
 "MCP test transcription succeeds."
 
-**Task 41: Voice/Call Prep Crew** Concern: Transcript → summary + objections +
+**[COMPLETED] Task 41: Voice/Call Prep Crew** Concern: Transcript → summary + objections +
 next steps only. Start: Task 40 done. End: voice-call-prep.ts (extend
 meeting-prep crew). TestSprite: "Process sample transcript; generates
 handoff-ready brief."
 
-**Task 42: Team Handoff Crew & Table** Concern: Generate handoff brief + tasks
+**[COMPLETED] Task 42: Team Handoff Crew & Table** Concern: Generate handoff brief + tasks
 only. Start: Task 41 done. End: New table handoffs + crew that creates internal
 tasks. TestSprite: "Handoff generated with full context from audit trail."
 
-**Task 43: Handoff UI in dashboard** Concern: Display + assignment only. Start:
+**[COMPLETED] Task 43: Handoff UI in dashboard** Concern: Display + assignment only. Start:
 Task 42 done. End: New section in carousel/sidebar for team handoffs.
 TestSprite: "End-to-end call prep → handoff visible and assignable."
 
