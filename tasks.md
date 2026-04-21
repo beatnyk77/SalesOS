@@ -307,23 +307,26 @@ to existing draft outputs. TestSprite: "Generate proposal; confirm it includes a
 
 **Phase B: Bulk CSV/Excel Prospect Upload & Evaluation (Tasks 34–36)**
 
-**Task 34: Bulk upload Edge Function (parsing)** Concern: CSV/Excel parsing +
+**[COMPLETED] Task 34: Bulk upload Edge Function (parsing)** Concern: CSV/Excel parsing +
 validation only (SheetJS/PapaParse). Start: Task 33 done. End: Edge Function
 that parses file, creates rows in prospect_lists, triggers evaluation.
 Instructions: Client-side preview optional; server-side for security.
 TestSprite: "Upload sample CSV; rows parsed, deduped, stored correctly."
 
-**Task 35: Bulk Prospect Evaluator Crew** Concern: Parallel enrichment + ICP
+**[COMPLETED] Task 35: Bulk Prospect Evaluator Crew** Concern: Parallel enrichment + ICP
 scoring only (reuse Task 11 batch logic). Start: Task 34 done. End: Crew that
-calls Hunter/Exa in batches, scores, suggests openers. Instructions: Dry-run
-mandatory; write to leads table. TestSprite: "Process 50 prospects; batchSize
-respected, audit trail per lead."
+takes prospect_list_id, fetches all pending leads, runs evaluation for each,
+and updates status. Instructions: Reuse lib/agents/crews/prospect-evaluator.ts
+logic (Researcher -> Analyst -> Scorer). TestSprite: "Trigger list evaluation;
+confirm audit trail shows batch success/failure counts."
 
-**Task 36: Bulk upload UI + carousel integration** Concern: Drag-drop +
+**[COMPLETED] Task 36: Bulk upload UI + carousel integration** Concern: Drag-drop +
 progress + approval only. Start: Task 35 done. End: New dashboard section
-feeding into Actions Pending Approval. TestSprite: "Upload → evaluation →
-pending cards appear." Phase C: WhatsApp Integration for Follow-Ups &
-Prospecting (Tasks 37–39)
+`Prospects` with upload zone + table of lists + progress bars. Instructions:
+Use existing UI patterns from Collateral page. TestSprite: "Upload CSV; see
+progress bar update as evaluators finish batch chunks."
+
+Phase C: WhatsApp Integration for Follow-Ups & Prospecting (Tasks 37–39)
 
 **Task 37: Add whatsapp-mcp to Antigravity config** Concern: MCP connection only
 (use your existing fork). Start: Task 36 done. End: Config updated; basic
