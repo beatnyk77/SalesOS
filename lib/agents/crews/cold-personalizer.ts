@@ -21,7 +21,7 @@
 import { getSupabaseServer } from '../../supabase/server';
 import { logToAuditTrail } from '../utils';
 import { CollateralRAGCrew } from './collateral-rag';
-import { Collateral } from '../rag/collateral-rag';
+import { Collateral } from '../../rag/collateral-rag';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

@@ -46,7 +46,7 @@ serve(async (req) => {
       console.warn("Parse errors:", parsed.errors)
     }
 
-    const rows = parsed.data as any[]
+    const rows = parsed.data as Record<string, any>[]
     if (rows.length === 0) throw new Error("No data found in CSV")
 
     // 1. Create Prospect List
