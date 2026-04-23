@@ -14,7 +14,7 @@
  */
 
 import { logToAuditTrail } from '../utils';
-import { queryProposalTemplates, ProposalFilter } from '../../rag/proposal-rag';
+import { queryProposalTemplates, ProposalFilter } from '@/lib/rag/proposal-rag';
 import { CollateralRAGCrew } from './collateral-rag';
 
 // ─── Types ────────────────────────────────────────────────────────────────────

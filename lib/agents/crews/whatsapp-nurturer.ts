@@ -1,4 +1,4 @@
-import { getSupabaseServer } from '../../supabase/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { logToAuditTrail } from '../utils';
 import { CollateralRAGCrew } from './collateral-rag';
 

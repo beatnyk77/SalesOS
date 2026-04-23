@@ -1,4 +1,4 @@
-import { getSupabaseServer } from '../../supabase/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { InboundLeadQualifierCrew } from './inbound-qualifier';
 import { logToAuditTrail } from '../utils';
 

@@ -9,7 +9,7 @@
  *   3. Stores record in `contracts` table.
  */
 
-import { getSupabaseServer } from '../../supabase/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { logToAuditTrail } from '../utils';
 
 export interface ContractTerms {

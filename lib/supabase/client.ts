@@ -1,10 +1,15 @@
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+/**
+ * createClient
+ * 
+ * Factory function for creating a Supabase client in Browser/Client Components.
+ * Uses auth-helpers for automatic cookie handling and session management.
+ */
+export function createClient() {
+  return createClientComponentClient();
+}
 
-// Client for use in Browser/Client Components
-export const createClient = () => createSupabaseClient(supabaseUrl, supabaseAnonKey);
-
-// Legacy singleton export
+// Legacy singleton export for backward compatibility
+// Note: Prefer using createClient() inside components to ensure correct session state.
 export const supabase = createClient();

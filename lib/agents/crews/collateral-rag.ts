@@ -7,7 +7,7 @@
  * based on provided metadata filters.
  */
 
-import { queryCollateral, CollateralFilter, Collateral } from '../../rag/collateral-rag';
+import { queryCollateral, CollateralFilter, Collateral } from '@/lib/rag/collateral-rag';
 import { logToAuditTrail } from '../utils';
 
 export interface CollateralRAGInput {

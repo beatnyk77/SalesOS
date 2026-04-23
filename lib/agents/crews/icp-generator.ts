@@ -9,7 +9,7 @@
  *   3. Persists the ICP to the `icp_criteria` table for use in lead scoring
  */
 
-import { getSupabaseServer } from '../../supabase/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { logToAuditTrail } from '../utils';
 
 export interface ICPGeneratorInput {

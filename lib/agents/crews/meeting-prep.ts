@@ -16,7 +16,7 @@
  *   - All actions logged to agent_audit_trail.
  */
 
-import { getSupabaseServer } from '../../supabase/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { logToAuditTrail } from '../utils';
 
 // ─── Types ────────────────────────────────────────────────────────────────────

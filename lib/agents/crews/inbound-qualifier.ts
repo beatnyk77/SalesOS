@@ -1,6 +1,6 @@
-import { getSupabaseServer } from '../../supabase/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { logToAuditTrail } from '../utils';
-import { getMatchingICPCriteria } from '../../rag/icp-rag';
+import { getMatchingICPCriteria } from '@/lib/rag/icp-rag';
 
 export interface QualificationOutput {
   status: 'qualified' | 'rejected' | 'pending';

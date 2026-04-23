@@ -18,10 +18,10 @@
  *   - All actions logged to agent_audit_trail.
  */
 
-import { getSupabaseServer } from '../../supabase/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
 import { logToAuditTrail } from '../utils';
 import { CollateralRAGCrew } from './collateral-rag';
-import { Collateral } from '../../rag/collateral-rag';
+import { Collateral } from '@/lib/rag/collateral-rag';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
