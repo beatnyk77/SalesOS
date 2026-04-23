@@ -63,6 +63,10 @@ export default function Sidebar() {
               <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
             </div>
             <div className="flex items-center justify-between text-xs">
+              <span className="text-zinc-400">Personalize</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+            </div>
+            <div className="flex items-center justify-between text-xs">
               <span className="text-zinc-400">Draft</span>
               <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
             </div>

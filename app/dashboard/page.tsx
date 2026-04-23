@@ -31,11 +31,31 @@ export default async function DashboardPage() {
     .eq('user_id', userId)
     .eq('status', 'pending');
 
-  const { count: weeklyActions } = await supabase
-    .from('agent_audit_trail')
+  const { count: activeCampaigns } = await supabase
+    .from('prospect_lists')
     .select('*', { count: 'exact', head: true })
     .eq('user_id', userId)
-    .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+    .in('status', ['pending', 'processing']);
+
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  const { data: recentLogs } = await supabase
+    .from('agent_audit_trail')
+    .select('created_at')
+    .eq('user_id', userId)
+    .gte('created_at', sevenDaysAgo);
+
+  // Calculate velocity per day for the last 7 days
+  const weeklyVelocity = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000);
+    const dateString = date.toISOString().split('T')[0];
+    const count = (recentLogs || []).filter(log => 
+      log.created_at.startsWith(dateString)
+    ).length;
+    return count;
+  });
+
+  const totalWeeklyActions = (recentLogs || []).length;
 
   // 2. Fetch Actions for Carousel
   // Get up to 3 pending leads and 3 pending emails
@@ -83,10 +103,11 @@ export default async function DashboardPage() {
         initialActions={carouselActions}
         stats={{
           totalLeads: totalLeads || 0,
-          activeCampaigns: 2, // Hardcoded for demo
+          activeCampaigns: activeCampaigns || 0,
           pendingApprovals: (pendingEmails || 0) + (pendingLeads || 0),
-          weeklyActions: weeklyActions || 0
+          weeklyActions: totalWeeklyActions
         }}
+        velocity={weeklyVelocity}
       />
     </div>
   );

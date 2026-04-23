@@ -30,9 +30,10 @@ interface DashboardClientProps {
     pendingApprovals: number;
     weeklyActions: number;
   };
+  velocity: number[];
 }
 
-export default function DashboardClient({ initialActions, stats }: DashboardClientProps) {
+export default function DashboardClient({ initialActions, stats, velocity }: DashboardClientProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const nextAction = () => {
@@ -44,6 +45,8 @@ export default function DashboardClient({ initialActions, stats }: DashboardClie
     if (initialActions.length === 0) return;
     setActiveIndex((prev) => (prev - 1 + initialActions.length) % initialActions.length);
   };
+
+  const maxVelocity = Math.max(...velocity, 1);
 
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-1000">
@@ -187,17 +190,17 @@ export default function DashboardClient({ initialActions, stats }: DashboardClie
             <span className="text-[10px] text-zinc-500 font-medium">LAST 7 DAYS</span>
           </div>
           <div className="flex items-end justify-between h-32 gap-2">
-            {[40, 65, 30, 85, 55, 90, 75].map((val, i) => (
+            {velocity.map((val, i) => (
               <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
                 <div 
                   className="w-full bg-blue-500/20 group-hover:bg-blue-500/40 transition-all rounded-t-sm relative"
-                  style={{ height: `${val}%` }}
+                  style={{ height: `${(val / maxVelocity) * 100}%` }}
                 >
                   <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-zinc-800 text-[10px] text-white px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                     {val} runs
                   </div>
                 </div>
-                <span className="text-[10px] text-zinc-600 font-bold">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}</span>
+                <span className="text-[10px] text-zinc-600 font-bold">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][(new Date().getDay() + i + 1) % 7]}</span>
               </div>
             ))}
           </div>
