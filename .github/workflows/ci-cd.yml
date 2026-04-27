@@ -41,6 +41,9 @@ jobs:
       - name: Install pnpm
         run: npm i -g pnpm@10.33.0
 
+      - name: Add pnpm to PATH
+        run: echo "/usr/local/bin" >> $GITHUB_PATH
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
