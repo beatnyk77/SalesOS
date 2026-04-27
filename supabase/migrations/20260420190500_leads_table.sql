@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS public.leads (
   company_name      text,
   job_title         text,
   linkedin_url      text,
-  status            text NOT NULL DEFAULT 'pending', -- pending, qualified, rejected
+  status            text NOT NULL DEFAULT 'pending', -- pending, qualified, rejected, in_progress, completed, failed, draft
   score             integer DEFAULT 0,
   summary           text,
   icp_matching_notes text,
