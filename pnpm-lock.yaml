@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@langchain/langgraph':
-        specifier: ^1.2.9
-        version: 1.2.9(@langchain/core@0.2.36(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.2(zod@4.3.6))(zod@4.3.6)
+        specifier: ^0.0.12
+        version: 0.0.12(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))
       '@supabase/auth-helpers-nextjs':
         specifier: ^0.10.0
         version: 0.10.0(@supabase/supabase-js@2.104.0)
@@ -28,19 +28,19 @@ importers:
         version: 1.0.1(@supabase/supabase-js@2.104.0)(axios@1.15.2)(canvas@2.11.2(encoding@0.1.13))(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(ws@8.20.0)
       lucide-react:
         specifier: ^0.474.0
-        version: 0.474.0(react@19.2.4)
+        version: 0.474.0(react@19.2.5)
       next:
-        specifier: 16.2.4
-        version: 16.2.4(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: ^16.2.4
+        version: 16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       papaparse:
         specifier: ^5.4.1
         version: 5.5.3
       react:
-        specifier: 19.2.4
-        version: 19.2.4
+        specifier: ^19.2.5
+        version: 19.2.5
       react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
+        specifier: ^19.2.5
+        version: 19.2.5(react@19.2.5)
       tailwind-merge:
         specifier: ^2.2.0
         version: 2.6.1
@@ -395,46 +395,17 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
+  '@langchain/core@0.1.63':
+    resolution: {integrity: sha512-+fjyYi8wy6x1P+Ee1RWfIIEyxd9Ee9jksEwvrggPwwI/p45kIDTdYTblXsM13y4mNWTiACyLSdbwnPaxxdoz+w==}
+    engines: {node: '>=18'}
+
   '@langchain/core@0.2.36':
     resolution: {integrity: sha512-qHLvScqERDeH7y2cLuJaSAlMwg3f/3Oc9nayRSXRU2UuaK/SOhI42cxiPLj1FnuHJSmN0rBQFkrLx02gI4mcVg==}
     engines: {node: '>=18'}
 
-  '@langchain/langgraph-checkpoint@1.0.1':
-    resolution: {integrity: sha512-HM0cJLRpIsSlWBQ/xuDC67l52SqZ62Bh2Y61DX+Xorqwoh5e1KxYvfCD7GnSTbWWhjBOutvnR0vPhu4orFkZfw==}
+  '@langchain/langgraph@0.0.12':
+    resolution: {integrity: sha512-f1N5eV3w7Y59P3rSjgNmjYoqghAPuxRUQTKX922OOhwYT0vmPVlmi99aduRHXK1oJDA3tVQCqrUkDV6D154Pnw==}
     engines: {node: '>=18'}
-    peerDependencies:
-      '@langchain/core': ^1.0.1
-
-  '@langchain/langgraph-sdk@1.8.9':
-    resolution: {integrity: sha512-vpz90auS4iFTNy2X/CFexOEoeFSvaK+MyI7iSmzYs9gGcfzwRjWUJ4MWsuc5ZNRecLStwho0PExVXRgGOXtcRw==}
-    peerDependencies:
-      '@langchain/core': ^1.1.16
-      react: ^18 || ^19
-      react-dom: ^18 || ^19
-      svelte: ^4.0.0 || ^5.0.0
-      vue: ^3.0.0
-    peerDependenciesMeta:
-      '@langchain/core':
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-      svelte:
-        optional: true
-      vue:
-        optional: true
-
-  '@langchain/langgraph@1.2.9':
-    resolution: {integrity: sha512-3c7BtGycHC2v9p6w/Hv8L7kEl1YnZYOQTDJtmAp3knk6JOedO7d2bYP3y0SRyhv5orUEGf/KGvx8ZsB/ideP7g==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@langchain/core': ^1.1.40
-      zod: ^3.25.32 || ^4.2.0
-      zod-to-json-schema: ^3.x
-    peerDependenciesMeta:
-      zod-to-json-schema:
-        optional: true
 
   '@langchain/openai@0.2.11':
     resolution: {integrity: sha512-Pu8+WfJojCgSf0bAsXb4AjqvcDyAWyoEB1AoCRNACgEnBWZuitz3hLwCo9I+6hAbeg3QJ37g82yKcmvKAg1feg==}
@@ -538,9 +509,6 @@ packages:
 
   '@so-ric/colorspace@1.1.6':
     resolution: {integrity: sha512-/KiKkpHNOBgkFJwu9sh48LkHSMYGyuTcSFK/qMBdnOAlrRJzRSXAOFB5qwzaVQuDl8wAvHVMkaASQDReTahxuw==}
-
-  '@standard-schema/spec@1.1.0':
-    resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
   '@supabase/auth-helpers-nextjs@0.10.0':
     resolution: {integrity: sha512-2dfOGsM4yZt0oS4TPiE7bD4vf7EVz7NRz/IJrV6vLg0GP7sMUx8wndv2euLGq4BjN9lUCpu6DG/uCC8j+ylwPg==}
@@ -1533,9 +1501,6 @@ packages:
   eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
 
-  eventemitter3@5.0.4:
-    resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
-
   expand-template@2.0.3:
     resolution: {integrity: sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg==}
     engines: {node: '>=6'}
@@ -1899,10 +1864,6 @@ packages:
   is-negative-zero@2.0.3:
     resolution: {integrity: sha512-5KoIu2Ngpyek75jXodFvnafB6DJgr3u8uuK0LEZJjrU19DrMD3EVERaR8sjz8CCGgpZvxPl9SuE1GMVPFHx1mw==}
     engines: {node: '>= 0.4'}
-
-  is-network-error@1.3.1:
-    resolution: {integrity: sha512-6QCxa49rQbmUWLfk0nuGqzql9U8uaV2H6279bRErPBHe/109hCzsLUBUHfbEtvLIHBd6hyXbgedBSHevm43Edw==}
-    engines: {node: '>=16'}
 
   is-number-object@1.1.1:
     resolution: {integrity: sha512-lZhclumE1G6VYD8VHe35wFaIif+CTy5SJIi5+3y4psDgWu4wPDoBhF8NxUOinEc7pHgiTsT6MaBb92rKhhD+Xw==}
@@ -2872,25 +2833,13 @@ packages:
     resolution: {integrity: sha512-RwFpb72c/BhQLEXIZ5K2e+AhgNVmIejGlTgiB9MzZ0e93GRvqZ7uSi0dvRF7/XIXDeNkra2fNHBxTyPDGySpjQ==}
     engines: {node: '>=8'}
 
-  p-queue@9.2.0:
-    resolution: {integrity: sha512-dWgLE8AH0HjQ9fe74pUkKkvzzYT18Inp4zra3lKHnnwqGvcfcUBrvF2EAVX+envufDNBOzpPq/IBUONDbI7+3g==}
-    engines: {node: '>=20'}
-
   p-retry@4.6.2:
     resolution: {integrity: sha512-312Id396EbJdvRONlngUx0NydfrIQ5lsYu0znKVUzVvArzEIt08V1qhtyESbGVd1FGX7UKtiFp5uwKZdM8wIuQ==}
     engines: {node: '>=8'}
 
-  p-retry@7.1.1:
-    resolution: {integrity: sha512-J5ApzjyRkkf601HpEeykoiCvzHQjWxPAHhyjFcEUP2SWq0+35NKh8TLhpLw+Dkq5TZBFvUM6UigdE9hIVYTl5w==}
-    engines: {node: '>=20'}
-
   p-timeout@3.2.0:
     resolution: {integrity: sha512-rhIwUycgwwKcP9yTOOFK/AKsAopjjCakVqLHePO3CC6Mir1Z99xT+R63jZxAT5lFZLa2inS5h+ZS2GvR99/FBg==}
     engines: {node: '>=8'}
-
-  p-timeout@7.0.1:
-    resolution: {integrity: sha512-AxTM2wDGORHGEkPCt8yqxOTMgpfbEHqF51f/5fJCmwFC3C/zNcGT63SymH2ttOAaiIws2zVg4+izQCjrakcwHg==}
-    engines: {node: '>=20'}
 
   papaparse@5.5.3:
     resolution: {integrity: sha512-5QvjGxYVjxO59MGU2lHVYpRWBBtKHnlIAcSe1uNFCkkptUh63NFRj0FJQm7nR67puEruUci/ZkjmEFrjCAyP4A==}
@@ -3004,16 +2953,16 @@ packages:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
 
-  react-dom@19.2.4:
-    resolution: {integrity: sha512-AXJdLo8kgMbimY95O2aKQqsz2iWi9jMgKJhRBAxECE4IFxfcazB2LmzloIoibJI3C12IlY20+KFaLv+71bUJeQ==}
+  react-dom@19.2.5:
+    resolution: {integrity: sha512-J5bAZz+DXMMwW/wV3xzKke59Af6CHY7G4uYLN1OvBcKEsWOs4pQExj86BBKamxl/Ik5bx9whOrvBlSDfWzgSag==}
     peerDependencies:
-      react: ^19.2.4
+      react: ^19.2.5
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  react@19.2.4:
-    resolution: {integrity: sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ==}
+  react@19.2.5:
+    resolution: {integrity: sha512-llUJLzz1zTUBrskt2pwZgLq59AemifIftw4aB7JxOqf1HY2FDaGDxgwpAPVzHU1kdWabH7FauP4i1oEeer2WCA==}
     engines: {node: '>=0.10.0'}
 
   readable-stream@3.6.2:
@@ -3413,10 +3362,6 @@ packages:
 
   uuid@10.0.0:
     resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
-    hasBin: true
-
-  uuid@13.0.0:
-    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
     hasBin: true
 
   uuid@9.0.1:
@@ -3875,6 +3820,23 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
+  '@langchain/core@0.1.63(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))':
+    dependencies:
+      ansi-styles: 5.2.0
+      camelcase: 6.3.0
+      decamelize: 1.2.0
+      js-tiktoken: 1.0.21
+      langsmith: 0.1.68(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))
+      ml-distance: 4.0.1
+      mustache: 4.2.0
+      p-queue: 6.6.2
+      p-retry: 4.6.2
+      uuid: 9.0.1
+      zod: 3.25.76
+      zod-to-json-schema: 3.25.2(zod@3.25.76)
+    transitivePeerDependencies:
+      - openai
+
   '@langchain/core@0.2.36(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))':
     dependencies:
       ansi-styles: 5.2.0
@@ -3891,37 +3853,11 @@ snapshots:
     transitivePeerDependencies:
       - openai
 
-  '@langchain/langgraph-checkpoint@1.0.1(@langchain/core@0.2.36(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))':
+  '@langchain/langgraph@0.0.12(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))':
     dependencies:
-      '@langchain/core': 0.2.36(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))
-      uuid: 10.0.0
-
-  '@langchain/langgraph-sdk@1.8.9(@langchain/core@0.2.36(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
-    dependencies:
-      '@types/json-schema': 7.0.15
-      p-queue: 9.2.0
-      p-retry: 7.1.1
-      uuid: 13.0.0
-    optionalDependencies:
-      '@langchain/core': 0.2.36(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-
-  '@langchain/langgraph@1.2.9(@langchain/core@0.2.36(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod-to-json-schema@3.25.2(zod@4.3.6))(zod@4.3.6)':
-    dependencies:
-      '@langchain/core': 0.2.36(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))
-      '@langchain/langgraph-checkpoint': 1.0.1(@langchain/core@0.2.36(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))
-      '@langchain/langgraph-sdk': 1.8.9(@langchain/core@0.2.36(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@standard-schema/spec': 1.1.0
-      uuid: 10.0.0
-      zod: 4.3.6
-    optionalDependencies:
-      zod-to-json-schema: 3.25.2(zod@4.3.6)
+      '@langchain/core': 0.1.63(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))
     transitivePeerDependencies:
-      - react
-      - react-dom
-      - svelte
-      - vue
+      - openai
 
   '@langchain/openai@0.2.11(encoding@0.1.13)(ws@8.20.0)':
     dependencies:
@@ -4026,8 +3962,6 @@ snapshots:
     dependencies:
       color: 5.0.3
       text-hex: 1.0.0
-
-  '@standard-schema/spec@1.1.0': {}
 
   '@supabase/auth-helpers-nextjs@0.10.0(@supabase/supabase-js@2.104.0)':
     dependencies:
@@ -4652,7 +4586,7 @@ snapshots:
       cliui: 8.0.1
       isomorphic-fetch: 3.0.0(encoding@0.1.13)
     optionalDependencies:
-      openai: 4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@4.3.6)
+      openai: 4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)
     transitivePeerDependencies:
       - encoding
 
@@ -4723,7 +4657,7 @@ snapshots:
       fs-extra: 11.3.4
       js-yaml: 4.1.1
       langchain: 0.2.20(@supabase/supabase-js@2.104.0)(axios@1.15.2)(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))(ws@8.20.0)
-      openai: 4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@4.3.6)
+      openai: 4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)
       path: 0.12.7
       sqlite: 5.1.1
       sqlite3: 5.1.7
@@ -5383,8 +5317,6 @@ snapshots:
 
   eventemitter3@4.0.7: {}
 
-  eventemitter3@5.0.4: {}
-
   expand-template@2.0.3: {}
 
   expr-eval@2.0.2: {}
@@ -5765,8 +5697,6 @@ snapshots:
 
   is-negative-zero@2.0.3: {}
 
-  is-network-error@1.3.1: {}
-
   is-number-object@1.1.1:
     dependencies:
       call-bound: 1.0.4
@@ -5995,7 +5925,7 @@ snapshots:
       semver: 7.7.4
       uuid: 10.0.0
     optionalDependencies:
-      openai: 4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@4.3.6)
+      openai: 4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)
 
   language-subtag-registry@0.3.23: {}
 
@@ -6085,9 +6015,9 @@ snapshots:
       yallist: 4.0.0
     optional: true
 
-  lucide-react@0.474.0(react@19.2.4):
+  lucide-react@0.474.0(react@19.2.5):
     dependencies:
-      react: 19.2.4
+      react: 19.2.5
 
   magic-string@0.30.21:
     dependencies:
@@ -6240,16 +6170,16 @@ snapshots:
   negotiator@0.6.4:
     optional: true
 
-  next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       '@next/env': 16.2.4
       '@swc/helpers': 0.5.15
       baseline-browser-mapping: 2.10.20
       caniuse-lite: 1.0.30001788
       postcss: 8.4.31
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      styled-jsx: 5.1.6(@babel/core@7.29.0)(react@19.2.4)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+      styled-jsx: 5.1.6(@babel/core@7.29.0)(react@19.2.5)
     optionalDependencies:
       '@next/swc-darwin-arm64': 16.2.4
       '@next/swc-darwin-x64': 16.2.4
@@ -6403,21 +6333,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@4.3.6):
-    dependencies:
-      '@types/node': 18.19.130
-      '@types/node-fetch': 2.6.13
-      abort-controller: 3.0.0
-      agentkeepalive: 4.6.0
-      form-data-encoder: 1.7.2
-      formdata-node: 4.4.1
-      node-fetch: 2.7.0(encoding@0.1.13)
-    optionalDependencies:
-      ws: 8.20.0
-      zod: 4.3.6
-    transitivePeerDependencies:
-      - encoding
-
   openapi-types@12.1.3: {}
 
   optionator@0.9.4:
@@ -6455,25 +6370,14 @@ snapshots:
       eventemitter3: 4.0.7
       p-timeout: 3.2.0
 
-  p-queue@9.2.0:
-    dependencies:
-      eventemitter3: 5.0.4
-      p-timeout: 7.0.1
-
   p-retry@4.6.2:
     dependencies:
       '@types/retry': 0.12.0
       retry: 0.13.1
 
-  p-retry@7.1.1:
-    dependencies:
-      is-network-error: 1.3.1
-
   p-timeout@3.2.0:
     dependencies:
       p-finally: 1.0.0
-
-  p-timeout@7.0.1: {}
 
   papaparse@5.5.3: {}
 
@@ -6588,14 +6492,14 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
-  react-dom@19.2.4(react@19.2.4):
+  react-dom@19.2.5(react@19.2.5):
     dependencies:
-      react: 19.2.4
+      react: 19.2.5
       scheduler: 0.27.0
 
   react-is@16.13.1: {}
 
-  react@19.2.4: {}
+  react@19.2.5: {}
 
   readable-stream@3.6.2:
     dependencies:
@@ -6922,10 +6826,10 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
-  styled-jsx@5.1.6(@babel/core@7.29.0)(react@19.2.4):
+  styled-jsx@5.1.6(@babel/core@7.29.0)(react@19.2.5):
     dependencies:
       client-only: 0.0.1
-      react: 19.2.4
+      react: 19.2.5
     optionalDependencies:
       '@babel/core': 7.29.0
 
@@ -7132,8 +7036,6 @@ snapshots:
 
   uuid@10.0.0: {}
 
-  uuid@13.0.0: {}
-
   uuid@9.0.1: {}
 
   w3c-xmlserializer@4.0.0:
@@ -7261,11 +7163,6 @@ snapshots:
   zod-to-json-schema@3.25.2(zod@3.25.76):
     dependencies:
       zod: 3.25.76
-
-  zod-to-json-schema@3.25.2(zod@4.3.6):
-    dependencies:
-      zod: 4.3.6
-    optional: true
 
   zod-validation-error@4.0.2(zod@4.3.6):
     dependencies:
