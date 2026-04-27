@@ -35,16 +35,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.33.0
+          run_install: false
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Lint code
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Build Next.js app
-        run: npm run build
+        run: pnpm run build
 
       - name: Install Supabase CLI
         run: npm install -g supabase-cli
@@ -59,7 +66,7 @@ jobs:
       - name: Deploy Next.js app to Vercel
         if: success()
         run: |
-          npm install -g vercel
+          pnpm install -g vercel
           vercel --prod --token $VERCEL_TOKEN --org-id $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID
 
       - name: Deploy Edge Functions
