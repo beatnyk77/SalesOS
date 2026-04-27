@@ -50,6 +50,12 @@ interface PipelineResult {
     is_disposable: boolean
     hunter_status: string
   }
+  linkedin_validation?: {
+    score: number
+    outcome: 'VALIDATED' | 'REJECTED'
+    is_active: boolean
+    profile_quality: number
+  }
   qualification?: {
     status: 'qualified' | 'rejected' | 'pending'
     score: number
@@ -177,7 +183,7 @@ serve(async (req: Request) => {
       hunter_status: validationData.hunter_status,
     }
 
-    // ── 6. Ghost-Lead Gate ─────────────────────────────────────────────────
+    // ── 6. Ghost-Lead Gate (Email) ─────────────────────────────────────────
     // Do NOT proceed to expensive Exa research if lead is rejected
     if (validation.outcome === 'REJECTED') {
       await logAudit(supabase, {
@@ -188,7 +194,7 @@ serve(async (req: Request) => {
           request_id: requestId,
           email: body.email,
           overall_status: 'rejected',
-          reason: 'Ghost-lead gate: validation failed',
+          reason: 'Ghost-lead gate: email validation failed',
           validation_score: validation.score
         }
       })
@@ -205,6 +211,66 @@ serve(async (req: Request) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
+
+    // ── 7. Stage 2 — LinkedIn Validation Gate (New) ───────────────────────
+    // Check LinkedIn profile before doing expensive Exa company research
+    if (body.linkedin_url) {
+      const { data: linkedinData, error: linkedinError } = await supabase.functions.invoke(
+        'validate-linkedin',
+        { body: { linkedin_url: body.linkedin_url, user_id: body.user_id } }
+      )
+
+      if (linkedinError || !linkedinData?.success) {
+        const errMsg = linkedinError?.message || 'LinkedIn validation stage failed'
+        await logAudit(supabase, {
+          userId: body.user_id,
+          agentName: 'trigger-lead-qualifier',
+          action: 'pipeline_error',
+          details: { request_id: requestId, stage: 'validate-linkedin', error: errMsg }
+        })
+        // Continue with pipeline but note the LinkedIn validation issue
+        // We don't reject based on LinkedIn alone as it might be optional
+      } else {
+        const linkedinValidation = {
+          score: linkedinData.score,
+          outcome: linkedinData.outcome,
+          is_active: linkedinData.is_active,
+          profile_quality: linkedinData.profile_quality
+        }
+
+        // LinkedIn Ghost-Lead Gate: Don't do expensive research if LinkedIn is inactive/poor quality
+        if (linkedinData.outcome === 'REJECTED') {
+          await logAudit(supabase, {
+            userId: body.user_id,
+            agentName: 'trigger-lead-qualifier',
+            action: 'pipeline_completed',
+            details: {
+              request_id: requestId,
+              email: body.email,
+              linkedin_url: body.linkedin_url,
+              overall_status: 'rejected',
+              reason: 'Ghost-lead gate: LinkedIn validation failed (inactive/low quality profile)',
+              validation_score: validation.score,
+              linkedin_score: linkedinData.score
+            }
+          })
+
+          const result: PipelineResult = {
+            request_id: requestId,
+            email: body.email,
+            validation,
+            linkedin_validation: linkedinValidation,
+            overall_status: 'rejected',
+            message: `Lead rejected at LinkedIn validation stage. Profile score: ${linkedinData.score}/100.`
+          }
+          return new Response(JSON.stringify(result), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
+        }
+      }
+    }
+    // If no LinkedIn URL provided, we continue with the pipeline (optional field)
 
     // ── 7. Stage 2 — Company Research (Exa) ───────────────────────────────
     const { data: researchData, error: researchError } = await supabase.functions.invoke(
