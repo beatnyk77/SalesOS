@@ -25,7 +25,7 @@ export interface ColdPersonalizerOutput {
 }
 
 export class ColdEmailPersonalizerCrew {
-  constructor(/* userId */) {}
+  constructor(private userId: string) {}
 
   async run(
     leads: ColdEmailInput[],

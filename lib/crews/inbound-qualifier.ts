@@ -14,7 +14,7 @@ export interface QualificationOutput {
 }
 
 export class InboundLeadQualifierCrew {
-  constructor(/* userId */) {}
+  constructor(private userId: string) {}
 
   async run(email: string, companyName: string): Promise<QualificationOutput> {
     // Return a simple deterministic stub based on heuristics

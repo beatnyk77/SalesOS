@@ -14,7 +14,7 @@ export interface ValidationOutput {
 }
 
 export class LeadValidationCrew {
-  constructor(/* userId */) {}
+  constructor(private userId: string) {}
 
   async run(email: string): Promise<ValidationOutput> {
     // Return a simple deterministic stub based on email validation
