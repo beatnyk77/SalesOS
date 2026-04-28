@@ -57,7 +57,9 @@ jobs:
         run: pnpm run build
 
       - name: Install Supabase CLI
-        run: npm install -g supabase-cli
+        run: npm install -g supabase
+      - name: Add Supabase CLI to PATH
+        run: echo "$(npm bin -g)" >> $GITHUB_PATH
 
       - name: Apply database migrations
         env:
