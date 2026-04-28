@@ -80,6 +80,10 @@ jobs:
           SUPABASE_PROJECT_REF:       ${{ secrets.SUPABASE_PROJECT_REF }}
         run: |
           export PATH="$HOME/.local/bin:$PATH"
+          if [ -z "$SUPABASE_PROJECT_REF" ]; then
+            echo "Error: SUPABASE_PROJECT_REF is not set"
+            exit 1
+          fi
           supabase link --project-ref $SUPABASE_PROJECT_REF
           supabase db push
 
