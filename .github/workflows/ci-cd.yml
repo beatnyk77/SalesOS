@@ -65,8 +65,8 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           SUPABASE_PROJECT_REF:       ${{ secrets.SUPABASE_PROJECT_REF }}
         run: |
-          npx supabase link --project-ref $SUPABASE_PROJECT_REF
-          npx supabase db push
+          ./node_modules/.bin/supabase link --project-ref $SUPABASE_PROJECT_REF
+          ./node_modules/.bin/supabase db push
 
       - name: Deploy Next.js app to Vercel
         if: success()
@@ -77,7 +77,7 @@ jobs:
       - name: Deploy Edge Functions
         if: success()
         run: |
-          npx supabase functions deploy $SUPABASE_PROJECT_REF
+          ./node_modules/.bin/supabase functions deploy $SUPABASE_PROJECT_REF
         env:
           SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
