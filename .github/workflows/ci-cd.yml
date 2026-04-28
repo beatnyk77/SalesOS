@@ -56,9 +56,19 @@ jobs:
       - name: Build Next.js app
         run: pnpm run build
 
-      - name: Install Supabase CLI (download binary)
+      - name: Install Supabase CLI (version pinned)
         run: |
-          curl -sL https://github.com/supabase/cli/releases/latest/download/supabase_$(uname -s)_$(uname -m).tar.gz | tar -xzf - -C $HOME/.local/bin
+          SUPABASE_VERSION="1.127.1"
+          mkdir -p $HOME/.local/bin
+          OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+          ARCH=$(uname -m)
+          # Map x86_64 to amd64 (Supabase uses amd64 naming)
+          if [ "$ARCH" = "x86_64" ]; then ARCH="amd64"; fi
+          DOWNLOAD_URL="https://github.com/supabase/cli/releases/download/v$SUPABASE_VERSION/supabase_${OS}_${ARCH}.tar.gz"
+          curl -sL $DOWNLOAD_URL -o supabase.tar.gz
+          gzip -t supabase.tar.gz || { echo "Invalid gzip format" >&2; exit 1; }
+          tar -xzf supabase.tar.gz -C $HOME/.local/bin
+          rm supabase.tar.gz
           chmod +x $HOME/.local/bin/supabase
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
@@ -69,6 +79,7 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           SUPABASE_PROJECT_REF:       ${{ secrets.SUPABASE_PROJECT_REF }}
         run: |
+          export PATH="$HOME/.local/bin:$PATH"
           supabase link --project-ref $SUPABASE_PROJECT_REF
           supabase db push
 
@@ -89,10 +100,12 @@ jobs:
       - name: Deploy Edge Functions
         if: success()
         run: |
+          export PATH="$HOME/.local/bin:$PATH"
           supabase functions deploy $SUPABASE_PROJECT_REF
         env:
           SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
 
       - name: Commit & push any new changes
         run: |
