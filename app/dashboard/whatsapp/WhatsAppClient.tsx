@@ -5,40 +5,64 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Send, Edit3, CheckCircle, XCircle, MessageSquare } from 'lucide-react'
 import { approveWhatsAppMessageAction, rejectWhatsAppMessageAction } from './actions'
 
+interface WhatsAppLead {
+  first_name: string | null
+  last_name: string | null
+  company_name: string | null
+}
+
+interface WhatsAppMessage {
+  id: string
+  message_body: string
+  reasoning: string
+  phone_number: string
+  status: string
+  created_at: string
+  updated_at: string
+  leads: WhatsAppLead
+}
+
 export function WhatsAppClient() {
-  const [messages, setMessages] = useState<any[]>([])
+  const [messages, setMessages] = useState<WhatsAppMessage[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editBody, setEditBody] = useState('')
   const supabase = createClientComponentClient()
 
+  const fetchMessages = useCallback(async () => {
+    setLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('whatsapp_messages')
+        .select('*, leads(first_name, last_name, company_name)')
+        .order('created_at', { ascending: false })
+
+      if (!error && data) {
+        setMessages(data)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [supabase])
+
   useEffect(() => {
-    fetchMessages()
+    const handleFetchMessages = async () => {
+      await fetchMessages()
+    }
+
+    handleFetchMessages()
 
     const channel = supabase
       .channel('whatsapp-updates')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'whatsapp_messages' }, () => {
-        fetchMessages()
+        handleFetchMessages()
       })
       .subscribe()
 
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase])
-
-  async function fetchMessages() {
-    setLoading(true)
-    const { data, error } = await supabase
-      .from('whatsapp_messages')
-      .select('*, leads(first_name, last_name, company_name)')
-      .order('created_at', { ascending: false })
-
-    if (!error && data) {
-      setMessages(data)
-    }
-    setLoading(false)
-  }
+  }, [supabase, fetchMessages])
 
   async function handleApprove(id: string) {
     try {
@@ -61,7 +85,7 @@ export function WhatsAppClient() {
     }
   }
 
-  function startEdit(msg: any) {
+  function startEdit(msg: WhatsAppMessage) {
     setEditingId(msg.id)
     setEditBody(msg.message_body)
   }

@@ -81,7 +81,7 @@ export default async function LeadsPage() {
           </div>
         ) : (
           <LeadsClient
-            initialLeads={(leads ?? []) as any}
+            initialLeads={leads ?? []}
             userId={user.id}
           />
         )}

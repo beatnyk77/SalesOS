@@ -91,7 +91,7 @@ export class WhatsAppNurturerCrew {
     return draft;
   }
 
-  private generateMessage(lead: any, context: string, collateral: any[]): WhatsAppMessageDraft {
+  private generateMessage(lead: Lead, context: string, collateral: Collateral[]): WhatsAppMessageDraft {
     const firstName = lead.first_name || 'there';
     const companyName = lead.company_name || 'your team';
     

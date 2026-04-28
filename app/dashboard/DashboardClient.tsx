@@ -151,7 +151,7 @@ export default function DashboardClient({ initialActions, stats, velocity }: Das
             </div>
             <h3 className="text-xl font-semibold text-zinc-400">All caught up!</h3>
             <p className="text-zinc-600 mt-2 max-w-sm">
-              Your agents are hard at work. We'll alert you when a lead, email, or proposal needs your expert eye.
+              Your agents are hard at work. We&apos;ll alert you when a lead, email, or proposal needs your expert eye.
             </p>
           </div>
         )}

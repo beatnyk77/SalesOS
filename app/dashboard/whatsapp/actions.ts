@@ -11,7 +11,7 @@ export async function approveWhatsAppMessageAction(messageId: string, updatedBod
     throw new Error('Not authenticated')
   }
 
-  const updates: any = { status: 'sent' }
+  const updates: { status: string; message_body?: string } = { status: 'sent' }
   if (updatedBody) {
     updates.message_body = updatedBody
   }

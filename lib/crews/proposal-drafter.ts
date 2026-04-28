@@ -11,7 +11,7 @@ export interface ProposalInput {
   client_name: string;
   project_title: string;
   project_description: string;
-  filter?: any;
+  filter?: Record<string, unknown>;
 }
 
 export interface ProposalResult {

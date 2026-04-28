@@ -2,11 +2,15 @@ import { getSupabaseServer } from '@/lib/supabase/server';
 import { logToAuditTrail } from '../utils';
 import { getMatchingICPCriteria } from '@/lib/rag/icp-rag';
 
+interface ResearchData {
+  [key: string]: unknown;
+}
+
 export interface QualificationOutput {
   status: 'qualified' | 'rejected' | 'pending';
   score: number;
   reasoning: string;
-  researchData: any;
+  researchData: ResearchData;
 }
 
 /**
@@ -42,17 +46,17 @@ export class InboundLeadQualifierCrew {
       // 1. Research Lead (Agent: Researcher)
       // Calls the research-company Edge Function which uses Exa
       const { data: researchRes, error: researchError } = await supabase.functions.invoke('research-company', {
-        body: { 
-          company_name: companyName || email.split('@')[1], 
-          user_id: this.userId 
+        body: {
+          company_name: companyName || email.split('@')[1],
+          user_id: this.userId
         }
       });
 
       if (researchError) {
         throw new Error(`Research failed: ${researchError.message}`);
       }
-      
-      const researchData = researchRes.success ? researchRes.data : null;
+
+      const researchData = researchRes.success ? (researchRes.data as ResearchData) : null;
       if (!researchData) {
         throw new Error("Research data could not be retrieved.");
       }
@@ -119,15 +123,15 @@ export class InboundLeadQualifierCrew {
 
       return output;
 
-    } catch (error: any) {
+    } catch (error) {
       // Log failure for transparency
       await logToAuditTrail({
         userId: this.userId,
         agentName: 'Inbound Lead Qualifier Crew',
         action: 'qualification_failed',
-        details: { 
-          email, 
-          error: error.message 
+        details: {
+          email,
+          error: error instanceof Error ? error.message : String(error)
         }
       });
       throw error;

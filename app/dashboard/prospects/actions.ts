@@ -17,8 +17,8 @@ export async function evaluateProspectListAction(listId: string) {
     // Run evaluation in background (or await if short, but we'll await for simplicity here)
     const results = await evaluator.run(listId)
     return { success: true, results }
-  } catch (err: any) {
+  } catch (err) {
     console.error("Bulk Evaluation Error:", err)
-    throw new Error(err.message || 'Failed to evaluate prospect list')
+    throw new Error(err instanceof Error ? err.message : 'Failed to evaluate prospect list')
   }
 }

@@ -82,13 +82,13 @@ export class NegotiationHandlerCrew {
         draft
       };
 
-    } catch (err: any) {
+    } catch (err) {
       console.error('[NegotiationHandlerCrew] Error:', err);
-      return { success: false, error: err.message };
+      return { success: false, error: err instanceof Error ? err.message : String(err) };
     }
   }
 
-  private draftResponse(objection: string, lead: any, collateral: any[]): NegotiationDraft {
+  private draftResponse(objection: string, lead: Lead, collateral: Collateral[]): NegotiationDraft {
     const isPrice = objection.toLowerCase().includes('price') || objection.toLowerCase().includes('cost') || objection.toLowerCase().includes('expensive');
     
     let justification = '';

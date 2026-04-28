@@ -83,7 +83,7 @@ export class LeadValidationCrew {
 
       return output;
 
-    } catch (error: any) {
+    } catch (error) {
       // Log failure to audit trail
       await logToAuditTrail({
         userId: this.userId,
@@ -91,7 +91,7 @@ export class LeadValidationCrew {
         action: 'crew_execution_failed',
         details: {
           email,
-          error: error.message
+          error: error instanceof Error ? error.message : String(error)
         }
       });
 

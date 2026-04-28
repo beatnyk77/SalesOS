@@ -12,7 +12,7 @@ export interface Log {
     costSaved?: number;
     linkedInQualityScore?: number;
     exaSearchDepth?: number;
-    researchSources?: any[];
+    researchSources?: unknown[];
     reasoning?: string;
   };
   costSaved?: number;

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { UploadCloud, File, CheckCircle, AlertCircle, X, Loader2, Play, Users } from 'lucide-react'
+import { UploadCloud, File, CheckCircle, Loader2, Play, Users } from 'lucide-react'
 import { evaluateProspectListAction } from './actions'
 
 interface ProspectList {
@@ -21,12 +21,19 @@ export function ProspectsClient() {
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
   const [prospectLists, setProspectLists] = useState<ProspectList[]>([])
-  
+
   const supabase = createClient()
 
+  const fetchProspectLists = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('prospect_lists')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (data) setProspectLists(data)
+  }, [supabase])
+
   useEffect(() => {
-    fetchProspectLists()
-    
     // Subscribe to changes
     const channel = supabase
       .channel('prospect_lists_changes')
@@ -35,19 +42,17 @@ export function ProspectsClient() {
       })
       .subscribe()
 
+    // Initial fetch - wrapped in async function to avoid setState in effect
+    const fetchInitialData = async () => {
+      await fetchProspectLists()
+    }
+    fetchInitialData()
+
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [])
+  }, [fetchProspectLists, supabase])
 
-  const fetchProspectLists = async () => {
-    const { data, error } = await supabase
-      .from('prospect_lists')
-      .select('*')
-      .order('created_at', { ascending: false })
-    
-    if (data) setProspectLists(data)
-  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -84,9 +89,9 @@ export function ProspectsClient() {
       setFile(null)
       fetchProspectLists()
       
-    } catch (err: any) {
+    } catch (err) {
       setUploadStatus('error')
-      setErrorMessage(err.message)
+      setErrorMessage(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setIsUploading(false)
     }
@@ -96,8 +101,8 @@ export function ProspectsClient() {
     setIsEvaluating(listId)
     try {
       await evaluateProspectListAction(listId)
-    } catch (err: any) {
-      alert(err.message)
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setIsEvaluating(null)
     }

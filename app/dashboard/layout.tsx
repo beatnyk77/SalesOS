@@ -4,7 +4,6 @@
  * Task 22: Sidebar navigation + global layout.
  */
 
-import { redirect } from 'next/navigation';
 import { getSupabaseServer } from '../../lib/supabase/server';
 import Sidebar from '../../components/dashboard/Sidebar';
 

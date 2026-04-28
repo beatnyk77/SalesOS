@@ -58,8 +58,8 @@ export class BulkProspectEvaluatorCrew {
           // Reuses the institutional-grade qualifier logic
           await this.qualifier.run(lead.email, lead.company_name);
           results.success++;
-        } catch (error: any) {
-          console.error(`Evaluation failed for ${lead.email}:`, error.message);
+        } catch (error) {
+          console.error(`Evaluation failed for ${lead.email}:`, error instanceof Error ? error.message : String(error));
           results.failed++;
         }
       });

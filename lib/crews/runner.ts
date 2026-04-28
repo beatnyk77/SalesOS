@@ -20,12 +20,12 @@ export type CrewType = 'proposal-drafter' | 'lead-qualifier' | 'lead-validation'
 export interface RunnerInput {
   crewType: CrewType;
   userId: string;
-  payload: Record<string, any>;
+  payload: Record<string, unknown>;
 }
 
 export interface RunnerOutput {
   success: boolean;
-  result?: any;
+  result?: unknown;
   error?: string;
 }
 
@@ -39,7 +39,7 @@ export async function runCrew(input: RunnerInput): Promise<RunnerOutput> {
   // Log start
   await logToLedger(userId, crewType, 'crew_started', { payload });
 
-  let result: any;
+  let result: unknown;
 
   switch (crewType) {
     case 'proposal-drafter': {
@@ -109,7 +109,7 @@ async function logToLedger(
   userId: string,
   crewType: CrewType,
   action: string,
-  details: Record<string, any>
+  details: Record<string, unknown>
 ): Promise<void> {
   try {
     const { createClient } = await import('@supabase/supabase-js');
@@ -129,7 +129,8 @@ async function logToLedger(
   }
 }
 
-function summarizeResult(crewType: CrewType, result: any): string {
+function summarizeResult(crewType: CrewType, result: unknown): string {
+  const r = result as any;
   switch (crewType) {
     case 'proposal-drafter':
       return result.success ? `Draft created: ${result.draft?.title}` : `Draft failed: ${result.error}`;

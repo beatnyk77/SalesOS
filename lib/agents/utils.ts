@@ -4,7 +4,7 @@ export interface AuditLogEntry {
   userId: string;
   agentName: string;
   action: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 /**

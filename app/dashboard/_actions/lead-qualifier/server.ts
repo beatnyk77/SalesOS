@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { runCrew } from "@/lib/crews/runner";
+import type { QualificationOutput } from "@/lib/crews/inbound-qualifier";
 
 export async function qualifyLead(formData: FormData) {
   const supabase = getSupabaseServer();
@@ -50,7 +51,7 @@ export async function qualifyLead(formData: FormData) {
   });
 
   if (result.success && result.result) {
-    const qualification = result.result as any; // QualificationOutput
+    const qualification = result.result as QualificationOutput;
 
     // Update lead with qualification results
     const { error: updateQualError } = await supabase

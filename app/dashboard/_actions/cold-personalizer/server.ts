@@ -24,13 +24,20 @@ export async function personalizeColdEmail(formData: FormData) {
     },
   });
 
-  if (result.success && result.result?.emails) {
-    const emails = result.result.emails as any[]; // ColdPersonalizerOutput[]
+  if (result.success && result.result?.results) {
+    // Map crew results to the shape expected by the database insertion
+    const emails = result.result.results.map((r) => ({
+      to: r.email,
+      subject: r.subject ?? '',
+      body: r.body ?? '',
+      full_html: undefined,
+      personalization_signals: undefined,
+    }));
 
     // Persist drafts into cold_emails table
     for (const e of emails) {
       const { error: insertError } = await supabase
-        .from("cold_emails")
+        .from('cold_emails')
         .insert({
           user_id: userId,
           lead_email: e.to,
@@ -38,7 +45,7 @@ export async function personalizeColdEmail(formData: FormData) {
           body: e.body,
           full_html: e.full_html,
           personalization_signals: e.personalization_signals,
-          status: "DRAFT",
+          status: 'DRAFT',
           metadata: {
             dry_run: true,
             research_data_available: !!e.personalization_signals?.research_data_available,
@@ -47,13 +54,13 @@ export async function personalizeColdEmail(formData: FormData) {
         });
 
       if (insertError) {
-        console.error("Failed to insert cold email draft:", insertError);
+        console.error('Failed to insert cold email draft:', insertError);
       }
     }
 
     // Revalidate
-    revalidatePath("/dashboard/cold-emails");
-    revalidatePath("/dashboard");
+    revalidatePath('/dashboard/cold-emails');
+    revalidatePath('/dashboard');
 
     return { success: true, emails };
   } else {

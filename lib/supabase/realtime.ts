@@ -17,8 +17,8 @@ export interface Lead {
   score: number;
   summary: string | null;
   icp_matching_notes: string | null;
-  research_payload: Record<string, any>;
-  metadata: Record<string, any>;
+  research_payload: Record<string, unknown>;
+  metadata: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }

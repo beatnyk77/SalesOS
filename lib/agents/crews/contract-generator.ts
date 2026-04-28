@@ -12,6 +12,13 @@
 import { getSupabaseServer } from '@/lib/supabase/server';
 import { logToAuditTrail } from '../utils';
 
+interface Lead {
+  company_name: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
 export interface ContractTerms {
   service_fee: number;
   duration_months: number;
@@ -76,13 +83,13 @@ export class ContractGeneratorCrew {
         content
       };
 
-    } catch (err: any) {
+    } catch (err) {
       console.error('[ContractGeneratorCrew] Error:', err);
-      return { success: false, error: err.message };
+      return { success: false, error: err instanceof Error ? err.message : String(err) };
     }
   }
 
-  private generateMarkdownContent(lead: any, terms: ContractTerms): string {
+  private generateMarkdownContent(lead: Lead, terms: ContractTerms): string {
     return `
 # SERVICE AGREEMENT
 

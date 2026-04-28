@@ -57,20 +57,20 @@ export class CollateralRAGCrew {
         reasoning: successMessage
       };
 
-    } catch (err: any) {
+    } catch (err) {
       console.error('[CollateralRAGCrew] Retrieval error:', err);
-      
+
       await logToAuditTrail({
         userId: user_id,
         agentName: 'collateral_rag_crew',
         action: 'retrieval_failed',
-        details: { filter, error: err.message },
+        details: { filter, error: err instanceof Error ? err.message : String(err) },
       });
 
       return {
         success: false,
         collateral: [],
-        reasoning: `Failed to retrieve collateral: ${err.message}`
+        reasoning: `Failed to retrieve collateral: ${err instanceof Error ? err.message : String(err)}`
       };
     }
   }

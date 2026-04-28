@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { runCrew } from "@/lib/crews/runner";
 
-export async function proposeDraft(prevState: any, formData: FormData) {
+export async function proposeDraft(prevState: { success?: boolean; error?: string } | null, formData: FormData): Promise<{ success: boolean; draftId?: string; error?: string }> {
   const supabase = getSupabaseServer();
   const userId = (await supabase.auth.getUser()).data.user?.id;
 

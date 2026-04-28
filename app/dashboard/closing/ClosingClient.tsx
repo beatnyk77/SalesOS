@@ -5,12 +5,44 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { FileText, Download, CheckCircle, XCircle, MessageSquare, ShieldCheck, DollarSign } from 'lucide-react'
 import { updateContractStatusAction } from './actions'
 
+interface Contract {
+  id: string
+  total_value?: number | null
+  status: string
+  created_at: string
+  leads?: {
+    company_name?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    email?: string | null
+  }
+  terms?: {
+    markdown_content?: string | null
+  }
+}
+
 export function ClosingClient() {
-  const [contracts, setContracts] = useState<any[]>([])
+  const [contracts, setContracts] = useState<Contract[]>([])
   const [loading, setLoading] = useState(true)
   const supabase = createClientComponentClient()
 
   useEffect(() => {
+    const fetchContracts = async () => {
+      setLoading(true)
+      try {
+        const { data, error } = await supabase
+          .from('contracts')
+          .select('*, leads(company_name, first_name, last_name, email)')
+          .order('created_at', { ascending: false })
+
+        if (!error && data) {
+          setContracts(data)
+        }
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchContracts()
     const channel = supabase
       .channel('contract-updates')
@@ -24,19 +56,6 @@ export function ClosingClient() {
     }
   }, [supabase])
 
-  async function fetchContracts() {
-    setLoading(true)
-    const { data, error } = await supabase
-      .from('contracts')
-      .select('*, leads(company_name, first_name, last_name, email)')
-      .order('created_at', { ascending: false })
-
-    if (!error && data) {
-      setContracts(data)
-    }
-    setLoading(false)
-  }
-
   async function handleUpdateStatus(id: string, status: string) {
     try {
       await updateContractStatusAction(id, status)
@@ -46,7 +65,7 @@ export function ClosingClient() {
     }
   }
 
-  function downloadContract(contract: any) {
+  function downloadContract(contract: Contract) {
     const content = contract.terms?.markdown_content || '# No Content'
     const blob = new Blob([content], { type: 'text/markdown' })
     const url = URL.createObjectURL(blob)
@@ -197,7 +216,7 @@ export function ClosingClient() {
               <h3 className="font-bold text-amber-900">AI Negotiation Support Active</h3>
               <p className="text-sm text-amber-800 mt-1">
                 The Negotiation Crew is automatically drafting ROI justifications for any price-related objections detected in emails or WhatsApp messages.
-                Review these drafts in the "Actions Pending Approval" carousel on the main dashboard.
+                Review these drafts in the &quot;Actions Pending Approval&quot; carousel on the main dashboard.
               </p>
             </div>
           </div>
@@ -207,10 +226,16 @@ export function ClosingClient() {
   )
 }
 
-function AlertTriangle(props: any) {
+interface AlertTriangleProps {
+  className?: string;
+}
+
+function AlertTriangle(props: AlertTriangleProps) {
+  const { className, ...rest } = props;
   return (
     <svg
-      {...props}
+      {...rest}
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"

@@ -58,7 +58,7 @@ serve(async (req) => {
     }
 
     // Validate LinkedIn URL format
-    const linkedinPattern = /^https:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9\-_]+/?$/
+    const linkedinPattern = /^https:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9\-_]+\/?$/
     if (!linkedinPattern.test(linkedin_url)) {
       throw new Error("Invalid LinkedIn URL format")
     }
@@ -86,7 +86,7 @@ serve(async (req) => {
     // Analyze results for profile activity and ICP matching
     let activityScore = 0
     let isActive = false
-    let lastActivityDate = null
+    const lastActivityDate = null
     let profileQuality = 0
 
     if (searchData.results && searchData.results.length > 0) {

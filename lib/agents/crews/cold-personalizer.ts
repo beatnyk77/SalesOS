@@ -53,12 +53,20 @@ export interface ColdPersonalizerOutput {
 
 // ─── Copywriter Agent (LLM-based personalization) ─────────────────────────────
 
+interface ResearchData {
+  industry?: string;
+  employee_count?: number;
+  tech_stack?: string[];
+  recent_news?: string;
+  company?: string;
+}
+
 /**
  * Generates a personalized cold email using research data and relevant collateral.
  */
 function generatePersonalizedEmail(
   lead: ColdEmailInput,
-  researchData: Record<string, any>,
+  researchData: ResearchData,
   collateral: Collateral[] = []
 ): PersonalizedEmail {
   const firstName = lead.first_name || lead.email.split('@')[0];
@@ -186,11 +194,11 @@ export class ColdEmailPersonalizerCrew {
       }
 
       // Build a lookup map: email → research data
-      const researchMap = new Map<string, Record<string, any>>();
+      const researchMap = new Map<string, ResearchData>();
       if (researchResults?.results) {
         for (const r of researchResults.results) {
           if (r.success && r.data) {
-            researchMap.set(r.email, r.data);
+            researchMap.set(r.email, r.data as ResearchData);
           }
         }
       }
@@ -242,8 +250,8 @@ export class ColdEmailPersonalizerCrew {
 
           output.emails.push(email);
           output.succeeded++;
-        } catch (err: any) {
-          output.errors.push({ email: lead.email, error: err.message });
+        } catch (err) {
+          output.errors.push({ email: lead.email, error: err instanceof Error ? err.message : String(err) });
           output.failed++;
         }
       }
@@ -263,12 +271,12 @@ export class ColdEmailPersonalizerCrew {
       });
 
       return output;
-    } catch (error: any) {
+    } catch (error) {
       await logToAuditTrail({
         userId: this.userId,
         agentName: 'Cold Email Personalizer Crew',
         action: 'personalization_failed',
-        details: { error: error.message, leads_count: leads.length },
+        details: { error: error instanceof Error ? error.message : String(error), leads_count: leads.length },
       });
       throw error;
     }

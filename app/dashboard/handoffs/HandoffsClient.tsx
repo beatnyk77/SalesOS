@@ -7,11 +7,40 @@ import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { assignHandoffAction, completeHandoffAction } from './actions'
 
+interface HandoffLead {
+  first_name: string | null
+  last_name: string | null
+  company_name: string | null
+}
+
+interface HandoffBrief {
+  summary?: string | null
+  objections?: string[] | null
+  next_steps?: string[] | null
+  tasks?: HandoffTask[] | null
+}
+
+interface HandoffTask {
+  title: string;
+  description: string;
+  priority: 'high' | 'medium' | 'low';
+}
+
+interface Handoff {
+  id: string
+  status: string
+  leads: HandoffLead
+  brief: HandoffBrief
+  tasks: HandoffTask[]
+  created_at: string
+  updated_at: string
+}
+
 export function HandoffsClient() {
-  const [handoffs, setHandoffs] = useState<any[]>([])
+  const [handoffs, setHandoffs] = useState<Handoff[]>([])
   const [loading, setLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [currentUser, setCurrentUser] = useState<any>(null)
+  const [currentUser, setCurrentUser] = useState<{ id: string; email: string } | null>(null)
   const supabase = createClientComponentClient()
 
   // Utility for Tailwind class merging
@@ -19,26 +48,8 @@ export function HandoffsClient() {
     return twMerge(clsx(inputs))
   }
 
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }: { data: { user: any } }) => {
-      setCurrentUser(user)
-    })
-    fetchHandoffs()
-
-    const channel = supabase
-      .channel('handoff-updates')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'team_handoffs' }, () => {
-        fetchHandoffs()
-      })
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [supabase])
-
-  async function fetchHandoffs() {
-    if (!isRefreshing) setLoading(true)
+  const fetchHandoffs = useCallback(async () => {
+    setLoading(true)
     const { data, error } = await supabase
       .from('team_handoffs')
       .select('*, leads(first_name, last_name, company_name)')
@@ -49,7 +60,30 @@ export function HandoffsClient() {
     }
     setLoading(false)
     setIsRefreshing(false)
-  }
+  }, [supabase])
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email: string } | null } }) => {
+      setCurrentUser(user)
+    })
+
+    const handleFetchHandoffs = async () => {
+      await fetchHandoffs()
+    }
+
+    handleFetchHandoffs()
+
+    const channel = supabase
+      .channel('handoff-updates')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'team_handoffs' }, () => {
+        handleFetchHandoffs()
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [supabase, fetchHandoffs])
 
   const handleManualRefresh = () => {
     setIsRefreshing(true)
@@ -181,7 +215,7 @@ export function HandoffsClient() {
                   <div>
                     <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Generated Tasks</h4>
                     <div className="space-y-2">
-                      {handoff.tasks?.map((task: any, i: number) => (
+                      {handoff.tasks?.map((task: HandoffTask, i: number) => (
                         <div key={i} className="bg-white border border-gray-200 rounded-md p-3">
                           <div className="flex justify-between items-start">
                             <span className="text-sm font-medium text-gray-900">{task.title}</span>

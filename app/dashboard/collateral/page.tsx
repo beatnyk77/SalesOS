@@ -57,10 +57,10 @@ export default function CollateralPage() {
       setDealStage('')
       setDocumentType('')
       
-    } catch (err: any) {
+    } catch (err) {
       console.error(err)
       setUploadStatus('error')
-      setErrorMessage(err.message || 'An unexpected error occurred.')
+      setErrorMessage(err instanceof Error ? err.message : 'An unexpected error occurred.')
     } finally {
       setIsUploading(false)
     }

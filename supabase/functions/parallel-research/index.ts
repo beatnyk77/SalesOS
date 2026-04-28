@@ -64,7 +64,7 @@ async function logAudit(
     userId: string
     agentName: string
     action: string
-    details?: Record<string, any>
+    details?: Record<string, unknown>
   }
 ) {
   const { error } = await supabase.from('agent_audit_trail').insert({

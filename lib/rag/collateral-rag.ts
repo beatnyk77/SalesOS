@@ -40,7 +40,7 @@ export async function queryCollateral(
   const supabase = getSupabaseServer();
 
   // Build the filter object based on provided criteria
-  const metadataFilter: Record<string, any> = {};
+  const metadataFilter: Record<string, unknown> = {};
   if (filter.industry) metadataFilter.industry = filter.industry;
   if (filter.deal_stage) metadataFilter.deal_stage = filter.deal_stage;
   if (filter.document_type) metadataFilter.document_type = filter.document_type;
