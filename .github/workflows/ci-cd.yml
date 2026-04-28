@@ -58,7 +58,7 @@ jobs:
 
       - name: Install Supabase CLI (download binary)
         run: |
-          curl -sL https://github.com/supabase/cli/releases/latest/download/supabase_$(uname -s)_$(uname -m).tar.gz | tar -xz -C $HOME/.local/bin
+          curl -sL https://github.com/supabase/cli/releases/latest/download/supabase_$(uname -s)_$(uname -m).tar.gz | tar -xzf - -C $HOME/.local/bin
           chmod +x $HOME/.local/bin/supabase
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
