@@ -44,7 +44,7 @@ interface ResearchResult {
   company_name: string
   success: boolean
   cached: boolean
-  data?: Record<string, any>
+  data?: Record<string, unknown>
   error?: string
 }
 

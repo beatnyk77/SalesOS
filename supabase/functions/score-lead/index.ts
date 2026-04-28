@@ -39,7 +39,7 @@ serve(async (req) => {
     // Simple heuristic for mock scoring
     if (leadText.includes('software') || leadText.includes('ai')) score += 20;
     if (leadText.includes('series a') || leadText.includes('funded')) score += 15;
-    if ((lead_data as any).employee_count === '50-200') score += 10; // employee_count is optional
+    if ((lead_data as unknown as { employee_count?: string }).employee_count === '50-200') score += 10; // employee_count is optional
 
     if (score > 80) {
       reasoning = "Excellent alignment. Target industry and company stage match perfectly.";

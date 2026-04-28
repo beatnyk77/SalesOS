@@ -390,7 +390,7 @@ serve(async (req: Request) => {
 
 async function logAudit(
   supabase: ReturnType<typeof createClient>,
-  entry: { userId: string; agentName: string; action: string; details?: Record<string, any> }
+  entry: { userId: string; agentName: string; action: string; details?: Record<string, unknown> }
 ) {
   const { error } = await supabase.from('agent_audit_trail').insert({
     user_id: entry.userId,

@@ -130,8 +130,7 @@ async function logToLedger(
 }
 
 function summarizeResult(crewType: CrewType, result: unknown): string {
-  const r = result as any;
-  switch (crewType) {
+    switch (crewType) {
     case 'proposal-drafter':
       return result.success ? `Draft created: ${result.draft?.title}` : `Draft failed: ${result.error}`;
     case 'lead-qualifier':
