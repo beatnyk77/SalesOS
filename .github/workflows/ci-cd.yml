@@ -54,7 +54,7 @@ jobs:
         run: pnpm run lint
 
       - name: Build Next.js app
-        run: pnpm run build
+        run: pnpm next build
 
       - name: Install Supabase CLI (version pinned)
         run: |
@@ -78,6 +78,7 @@ jobs:
           SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           SUPABASE_PROJECT_REF:       ${{ secrets.SUPABASE_PROJECT_REF }}
+          SUPABASE_ACCESS_TOKEN:      ${{ secrets.SUPABASE_FUNCTIONS_TOKEN }}
         run: |
           export PATH="$HOME/.local/bin:$PATH"
           if [ -z "$SUPABASE_PROJECT_REF" ]; then
@@ -99,16 +100,17 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_LOG_LEVEL: debug
         run: |
-          npx vercel --prod --token $VERCEL_TOKEN --org-id $VERCEL_ORG_ID --project-id $VERCEL_PROJECT_ID
+          npx vercel --prod --token $VERCEL_TOKEN --yes
 
       - name: Deploy Edge Functions
         if: success()
         run: |
           export PATH="$HOME/.local/bin:$PATH"
-          supabase functions deploy $SUPABASE_PROJECT_REF
+          supabase functions deploy --all
         env:
           SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_ACCESS_TOKEN:      ${{ secrets.SUPABASE_FUNCTIONS_TOKEN }}
 
 
       - name: Commit & push any new changes
