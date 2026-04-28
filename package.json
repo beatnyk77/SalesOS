@@ -9,9 +9,10 @@
   },
   "scripts": {
     "dev": "pnpm next dev",
-    "build": "pnpm next build",
+    "build": "pnpm run build:patch-lock",
     "start": "pnpm next start",
-    "lint": "pnpm eslint"
+    "lint": "pnpm eslint",
+    "build:patch-lock": "pnpm install --no-frozen-lockfile && pnpm next build"
   },
   "dependencies": {
     "@langchain/langgraph": "^0.0.12",
