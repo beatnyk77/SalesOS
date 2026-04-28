@@ -56,8 +56,12 @@ jobs:
       - name: Build Next.js app
         run: pnpm run build
 
-      - name: Install Supabase CLI (dev dependency)
-        run: pnpm add -D supabase
+      - name: Install Supabase CLI (download binary)
+        run: |
+          curl -sL https://github.com/supabase/cli/releases/latest/download/supabase_$(uname -s)_$(uname -m).tar.gz | tar -xz -C $HOME/.local/bin
+          chmod +x $HOME/.local/bin/supabase
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
 
       - name: Apply database migrations
         env:
@@ -65,8 +69,8 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           SUPABASE_PROJECT_REF:       ${{ secrets.SUPABASE_PROJECT_REF }}
         run: |
-          pnpm exec supabase link --project-ref $SUPABASE_PROJECT_REF
-          pnpm exec supabase db push
+          supabase link --project-ref $SUPABASE_PROJECT_REF
+          supabase db push
 
       - name: Deploy Next.js app to Vercel
         if: success()
@@ -77,7 +81,7 @@ jobs:
       - name: Deploy Edge Functions
         if: success()
         run: |
-          ./node_modules/.bin/supabase functions deploy $SUPABASE_PROJECT_REF
+          supabase functions deploy $SUPABASE_PROJECT_REF
         env:
           SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
