@@ -15,6 +15,8 @@
 import { getSupabaseServer } from '@/lib/supabase/server';
 import { logToAuditTrail } from '../utils';
 import { CollateralRAGCrew } from './collateral-rag';
+import type { Lead } from '@/lib/supabase/realtime';
+import type { Collateral } from '@/lib/rag/collateral-rag';
 
 export interface NegotiationInput {
   lead_id: string;
@@ -96,7 +98,7 @@ export class NegotiationHandlerCrew {
 
     if (isPrice) {
       justification = `Prospect expressed price concerns. We should emphasize the ${collateral.length > 0 ? 'attached case studies' : 'long-term value'} and ROI rather than discounting.`;
-      suggested_reply = `I understand that budget is a key consideration. However, looking at how we've helped similar companies in ${lead.metadata?.industry || 'your industry'} achieve a ${collateral[0]?.metadata?.roi || 'significant'} ROI within 6 months, the upfront cost is typically offset by the efficiency gains.`;
+      suggested_reply = `I understand that budget is a key consideration. However, looking at how we've helped similar companies in ${lead.metadata?.industry || 'your industry'} achieve significant ROI within 6 months, the upfront cost is typically offset by the efficiency gains.`;
     } else {
       justification = `Prospect raised a general objection: "${objection}". Focus on our technical superiority and implementation support.`;
       suggested_reply = `Thank you for sharing that concern. We've actually designed SalesOS to handle exactly this scenario by...`;

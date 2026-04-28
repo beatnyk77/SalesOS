@@ -13,6 +13,7 @@ export interface Lead {
   company_name: string | null;
   job_title: string | null;
   linkedin_url: string | null;
+  phone_number?: string | null;
   status: 'qualified' | 'rejected' | 'pending';
   score: number;
   summary: string | null;

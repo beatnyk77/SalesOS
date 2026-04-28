@@ -1,10 +1,9 @@
 'use server'
 
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { getSupabaseServer } from '@/lib/supabase/server'
 
 export async function updateContractStatusAction(contractId: string, status: string) {
-  const supabase = createServerActionClient({ cookies })
+  const supabase = getSupabaseServer()
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error || !session) throw new Error('Not authenticated')

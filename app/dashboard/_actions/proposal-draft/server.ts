@@ -9,7 +9,7 @@ export async function proposeDraft(prevState: { success?: boolean; error?: strin
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
   if (!userId) {
-    return { error: "Unauthorized" };
+    return { success: false, error: "Unauthorized" };
   }
 
   const client_name = formData.get("client_name") as string;
@@ -43,8 +43,10 @@ export async function proposeDraft(prevState: { success?: boolean; error?: strin
     },
   });
 
-  if (result.success && result.result?.draft) {
-    const draft = result.result.draft;
+  if (result.success && result.result) {
+    const output = result.result as { draft?: { title?: string; content?: string; metadata_applied?: string[]; template_used_id?: string } };
+    const draft = output.draft;
+    if (!draft) return { success: false, error: 'No draft returned' };
 
     // Persist draft content and metadata; you may store it in a "proposal_drafts" table instead
     const { error: insertError } = await supabase
@@ -63,7 +65,7 @@ export async function proposeDraft(prevState: { success?: boolean; error?: strin
     revalidatePath("/dashboard/proposals");
     revalidatePath("/dashboard");
 
-    return { success: true, draftId: insertError?.message || draft.title };
+    return { success: true };
   } else {
     // Optionally set back to a failed/needs-review state
     return { success: false, error: result.error };

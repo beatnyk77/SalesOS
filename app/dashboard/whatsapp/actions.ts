@@ -1,10 +1,9 @@
 'use server'
 
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { getSupabaseServer } from '@/lib/supabase/server'
 
 export async function approveWhatsAppMessageAction(messageId: string, updatedBody?: string) {
-  const supabase = createServerActionClient({ cookies })
+  const supabase = getSupabaseServer()
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error || !session) {
@@ -32,7 +31,7 @@ export async function approveWhatsAppMessageAction(messageId: string, updatedBod
 }
 
 export async function rejectWhatsAppMessageAction(messageId: string) {
-  const supabase = createServerActionClient({ cookies })
+  const supabase = getSupabaseServer()
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error || !session) {

@@ -1,13 +1,16 @@
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createBrowserClient } from '@supabase/ssr';
 
 /**
  * createClient
- * 
+ *
  * Factory function for creating a Supabase client in Browser/Client Components.
- * Uses auth-helpers for automatic cookie handling and session management.
+ * Uses @supabase/ssr for automatic cookie handling and session management.
  */
 export function createClient() {
-  return createClientComponentClient();
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 }
 
 // Legacy singleton export for backward compatibility

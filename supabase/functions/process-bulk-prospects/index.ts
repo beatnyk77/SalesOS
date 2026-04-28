@@ -46,7 +46,7 @@ serve(async (req) => {
       console.warn("Parse errors:", parsed.errors)
     }
 
-    const rows = parsed.data as Record<string, any>[]
+    const rows = parsed.data as Record<string, unknown>[]
     if (rows.length === 0) throw new Error("No data found in CSV")
 
     // 1. Create Prospect List
@@ -112,9 +112,10 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     )
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: errorMessage }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
     )
   }

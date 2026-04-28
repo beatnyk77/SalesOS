@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { FileText, Download, CheckCircle, XCircle, MessageSquare, ShieldCheck, DollarSign } from 'lucide-react'
 import { updateContractStatusAction } from './actions'
 
@@ -24,7 +24,7 @@ interface Contract {
 export function ClosingClient() {
   const [contracts, setContracts] = useState<Contract[]>([])
   const [loading, setLoading] = useState(true)
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
 
   useEffect(() => {
     const fetchContracts = async () => {
@@ -71,7 +71,7 @@ export function ClosingClient() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `Contract_${contract.leads?.company_name.replace(/\s+/g, '_')}.md`
+    a.download = `Contract_${(contract.leads?.company_name || 'Unknown').replace(/\s+/g, '_')}.md`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)

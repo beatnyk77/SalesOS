@@ -47,10 +47,10 @@ export async function runCrew(input: RunnerInput): Promise<RunnerOutput> {
       const crew = new ProposalDrafterCrew();
       const draftInput: ProposalInput = {
         user_id: userId,
-        client_name: payload.client_name,
-        project_title: payload.project_title,
-        project_description: payload.project_description,
-        filter: payload.filter,
+        client_name: payload.client_name as string,
+        project_title: payload.project_title as string,
+        project_description: payload.project_description as string,
+        filter: payload.filter as ProposalInput['filter'],
       };
       const output = await crew.run(draftInput);
       result = output;
@@ -61,8 +61,8 @@ export async function runCrew(input: RunnerInput): Promise<RunnerOutput> {
       const { InboundLeadQualifierCrew } = await import('./inbound-qualifier');
       const crew = new InboundLeadQualifierCrew(userId);
       const qualification: QualificationOutput = await crew.run(
-        payload.email,
-        payload.companyName
+        payload.email as string,
+        payload.companyName as string
       );
       result = qualification;
       break;
@@ -71,7 +71,7 @@ export async function runCrew(input: RunnerInput): Promise<RunnerOutput> {
     case 'lead-validation': {
       const { LeadValidationCrew } = await import('./lead-validation');
       const crew = new LeadValidationCrew(userId);
-      const validation: ValidationOutput = await crew.run(payload.email);
+      const validation: ValidationOutput = await crew.run(payload.email as string);
       result = validation;
       break;
     }
@@ -79,10 +79,10 @@ export async function runCrew(input: RunnerInput): Promise<RunnerOutput> {
     case 'cold-personalizer': {
       const { ColdEmailPersonalizerCrew } = await import('./cold-personalizer');
       const crew = new ColdEmailPersonalizerCrew(userId);
-      const personalizerInput: ColdEmailInput[] = payload.leads || [payload];
+      const personalizerInput: ColdEmailInput[] = (payload.leads as unknown as ColdEmailInput[]) || [(payload as unknown as ColdEmailInput)];
       const output = await crew.run(personalizerInput, {
-        batchSize: payload.batchSize,
-        dryRun: payload.dryRun ?? true,
+        batchSize: payload.batchSize as number,
+        dryRun: (payload.dryRun as boolean) ?? true,
       });
       result = output;
       break;
@@ -94,7 +94,7 @@ export async function runCrew(input: RunnerInput): Promise<RunnerOutput> {
 
   // Log success
   await logToLedger(userId, crewType, 'crew_completed', {
-    result: result.success ?? true,
+    result: (result as { success?: boolean }).success ?? true,
     summary: summarizeResult(crewType, result),
   });
 
@@ -131,15 +131,23 @@ async function logToLedger(
 
 function summarizeResult(crewType: CrewType, result: unknown): string {
     switch (crewType) {
-    case 'proposal-drafter':
-      return result.success ? `Draft created: ${result.draft?.title}` : `Draft failed: ${result.error}`;
-    case 'lead-qualifier':
-      return `Lead ${result.status}: score ${result.score}/100`;
-    case 'lead-validation':
-      return `Validation ${result.isValid ? 'passed' : 'failed'}: score ${result.score}/100`;
-    case 'cold-personalizer':
-      return `Personalized ${result.succeeded}/${result.total} emails`;
-    default:
-      return JSON.stringify(result).substring(0, 200);
-  }
+      case 'proposal-drafter': {
+        const r = result as { success?: boolean; draft?: { title?: string }; error?: string };
+        return r.success ? `Draft created: ${r.draft?.title}` : `Draft failed: ${r.error}`;
+      }
+      case 'lead-qualifier': {
+        const r = result as { status?: string; score?: number };
+        return `Lead ${r.status}: score ${r.score}/100`;
+      }
+      case 'lead-validation': {
+        const r = result as { isValid?: boolean; score?: number };
+        return `Validation ${r.isValid ? 'passed' : 'failed'}: score ${r.score}/100`;
+      }
+      case 'cold-personalizer': {
+        const r = result as { succeeded?: number; total?: number };
+        return `Personalized ${r.succeeded}/${r.total} emails`;
+      }
+      default:
+        return JSON.stringify(result).substring(0, 200);
+    }
 }

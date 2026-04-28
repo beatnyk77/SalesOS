@@ -1,6 +1,8 @@
 import { getSupabaseServer } from '@/lib/supabase/server';
 import { logToAuditTrail } from '../utils';
 import { CollateralRAGCrew } from './collateral-rag';
+import type { Lead } from '@/lib/supabase/realtime';
+import type { Collateral } from '@/lib/rag/collateral-rag';
 
 export interface WhatsAppNurturerInput {
   leadId: string;
@@ -8,7 +10,7 @@ export interface WhatsAppNurturerInput {
 }
 
 export interface WhatsAppMessageDraft {
-  phone_number: string;
+  phone_number?: string;
   message_body: string;
   reasoning: string;
 }
@@ -119,7 +121,7 @@ export class WhatsAppNurturerCrew {
     }
 
     return {
-      phone_number: lead.phone_number,
+      phone_number: lead.phone_number ?? undefined,
       message_body,
       reasoning
     };

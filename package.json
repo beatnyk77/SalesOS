@@ -2,6 +2,11 @@
   "name": "sales-os",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10.33.0"
+  },
   "scripts": {
     "dev": "pnpm next dev",
     "build": "pnpm next build",
@@ -10,8 +15,7 @@
   },
   "dependencies": {
     "@langchain/langgraph": "^0.0.12",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
-    "@supabase/auth-helpers-react": "^0.5.0",
+    "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.104.0",
     "clsx": "^2.1.0",
     "crewai": "^1.0.1",

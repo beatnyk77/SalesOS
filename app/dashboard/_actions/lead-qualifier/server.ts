@@ -59,7 +59,7 @@ export async function qualifyLead(formData: FormData) {
       .update({
         status: qualification.status, // 'qualified' | 'rejected' | 'pending'
         score: qualification.score,
-        summary: qualification.reasoning,
+        summary: qualification.match_keywords?.join(', ') || '',
         updated_at: new Date().toISOString(),
       })
       .eq("id", leadId);

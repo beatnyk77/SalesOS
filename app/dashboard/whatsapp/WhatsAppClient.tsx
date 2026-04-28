@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useState, useEffect, useCallback } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import { Send, Edit3, CheckCircle, XCircle, MessageSquare } from 'lucide-react'
 import { approveWhatsAppMessageAction, rejectWhatsAppMessageAction } from './actions'
 
@@ -27,7 +27,7 @@ export function WhatsAppClient() {
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editBody, setEditBody] = useState('')
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
 
   const fetchMessages = useCallback(async () => {
     setLoading(true)

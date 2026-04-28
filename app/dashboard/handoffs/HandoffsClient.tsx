@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import { ClipboardList, UserPlus, CheckCircle, Clock, AlertTriangle, RefreshCw } from 'lucide-react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -41,7 +41,7 @@ export function HandoffsClient() {
   const [loading, setLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [currentUser, setCurrentUser] = useState<{ id: string; email: string } | null>(null)
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
 
   // Utility for Tailwind class merging
   function cn(...inputs: ClassValue[]) {
@@ -63,8 +63,12 @@ export function HandoffsClient() {
   }, [supabase])
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email: string } | null } }) => {
-      setCurrentUser(user)
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setCurrentUser({ id: user.id, email: user.email || '' })
+      } else {
+        setCurrentUser(null)
+      }
     })
 
     const handleFetchHandoffs = async () => {
@@ -198,14 +202,14 @@ export function HandoffsClient() {
                     </p>
                   </div>
                   
-                  {handoff.brief?.objections?.length > 0 && (
+                  {(handoff.brief?.objections ?? []).length > 0 && (
                     <div>
                       <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 flex items-center gap-1">
                         <AlertTriangle className="w-3 h-3 text-orange-500" />
                         Key Objections
                       </h4>
                       <ul className="list-disc pl-5 space-y-1">
-                        {handoff.brief.objections.map((obj: string, i: number) => (
+                        {handoff.brief?.objections?.map((obj: string, i: number) => (
                           <li key={i} className="text-sm text-gray-700">{obj}</li>
                         ))}
                       </ul>

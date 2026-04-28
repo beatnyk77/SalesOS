@@ -377,10 +377,11 @@ serve(async (req: Request) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
 
-  } catch (err: any) {
-    console.error('[trigger-lead-qualifier] Unhandled error:', err)
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    console.error('[trigger-lead-qualifier] Unhandled error:', errorMessage)
     return new Response(
-      JSON.stringify({ error: 'Internal server error', detail: err.message }),
+      JSON.stringify({ error: 'Internal server error', detail: errorMessage }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }

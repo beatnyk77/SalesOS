@@ -24,14 +24,15 @@ export async function personalizeColdEmail(formData: FormData) {
     },
   });
 
-  if (result.success && result.result?.results) {
+  if (result.success && result.result) {
     // Map crew results to the shape expected by the database insertion
-    const emails = result.result.results.map((r) => ({
+    const output = result.result as { results?: Array<{ email?: string; subject?: string; body?: string; personalization_signals?: { research_data_available?: boolean } }> };
+    const emails = (output.results || []).map((r) => ({
       to: r.email,
       subject: r.subject ?? '',
       body: r.body ?? '',
       full_html: undefined,
-      personalization_signals: undefined,
+      personalization_signals: r.personalization_signals,
     }));
 
     // Persist drafts into cold_emails table
