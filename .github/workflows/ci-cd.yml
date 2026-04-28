@@ -56,10 +56,8 @@ jobs:
       - name: Build Next.js app
         run: pnpm run build
 
-      - name: Install Supabase CLI
-        run: npm install -g supabase
-      - name: Add Supabase CLI to PATH
-        run: echo "$(npm bin -g)" >> $GITHUB_PATH
+      - name: Install Supabase CLI (dev dependency)
+        run: pnpm add -D supabase
 
       - name: Apply database migrations
         env:
