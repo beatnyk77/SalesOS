@@ -6,6 +6,7 @@
 
 import { getSupabaseServer } from '../../lib/supabase/server';
 import Sidebar from '../../components/dashboard/Sidebar';
+import { redirect } from 'next/navigation';
 
 export default async function DashboardLayout({
   children,
@@ -17,8 +18,8 @@ export default async function DashboardLayout({
 
   if (!user) {
     // For demo purposes, we log the bypass but in production this would redirect.
-    console.warn('[DashboardLayout] No active session. Redirecting to login (simulated).');
-    // redirect('/login'); 
+    console.warn('[DashboardLayout] No active session. Redirecting to login.');
+    redirect('/login'); 
   }
   return (
     <div className="flex min-h-screen bg-black text-zinc-50">
