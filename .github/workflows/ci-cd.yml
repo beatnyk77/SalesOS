@@ -106,7 +106,7 @@ jobs:
       - name: Deploy Edge Functions
         if: success()
         run: |
-          supabase functions deploy --all
+          supabase functions deploy
         env:
           SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
