@@ -8,23 +8,22 @@ permissions:
   contents: write
   id-token: write
 
-env:
-  SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
-  SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-  SUPABASE_PROJECT_REF:       ${{ secrets.SUPABASE_PROJECT_REF }}
-  SUPABASE_ACCESS_TOKEN:      ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-  SUPABASE_DB_PASSWORD:       ${{ secrets.SUPABASE_DB_PASSWORD }}
-  EXA_API_KEY:                ${{ secrets.EXA_API_KEY }}
-  HUNTER_API_KEY:             ${{ secrets.HUNTER_API_KEY }}
-  GMAIL_API_KEY:              ${{ secrets.GMAIL_API_KEY }}
-  HUBSPOT_API_KEY:            ${{ secrets.HUBSPOT_API_KEY }}
-  VERCEL_TOKEN:               ${{ secrets.VERCEL_TOKEN }}
-  VERCEL_ORG_ID:              ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID:          ${{ secrets.VERCEL_PROJECT_ID }}
-
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      SUPABASE_PROJECT_REF:       ${{ secrets.SUPABASE_PROJECT_REF }}
+      SUPABASE_ACCESS_TOKEN:      ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD:       ${{ secrets.SUPABASE_DB_PASSWORD }}
+      EXA_API_KEY:                ${{ secrets.EXA_API_KEY }}
+      HUNTER_API_KEY:             ${{ secrets.HUNTER_API_KEY }}
+      GMAIL_API_KEY:              ${{ secrets.GMAIL_API_KEY }}
+      HUBSPOT_API_KEY:            ${{ secrets.HUBSPOT_API_KEY }}
+      VERCEL_TOKEN:               ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID:              ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID:          ${{ secrets.VERCEL_PROJECT_ID }}
 
     steps:
       - name: Checkout repository
