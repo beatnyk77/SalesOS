@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { BulkProspectEvaluatorCrew } from '../../../lib/agents/crews/bulk-prospect-evaluator'
 
 export async function evaluateProspectListAction(listId: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error || !session) {

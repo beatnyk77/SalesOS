@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { runCrew } from "@/lib/crews/runner";
 
 export async function proposeDraft(prevState: { success?: boolean; error?: string } | null, formData: FormData): Promise<{ success: boolean; draftId?: string; error?: string }> {
-  const supabase = createClient();
+  const supabase = await createClient();
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
   if (!userId) {

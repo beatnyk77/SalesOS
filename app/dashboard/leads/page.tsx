@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function LeadsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Get the current user session
   const {

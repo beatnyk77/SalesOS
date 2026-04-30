@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 
 export async function updateContractStatusAction(contractId: string, status: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error || !session) throw new Error('Not authenticated')

@@ -18,7 +18,7 @@ export async function approveLead(
   action: ApprovalAction,
   note?: string
 ): Promise<void> {
-  const supabase = createClient();
+  const supabase = await createClient();
   const newStatus = action === 'approved' ? 'qualified' : 'rejected';
 
   // Update lead status — eq('user_id', userId) acts as application-level RLS guard

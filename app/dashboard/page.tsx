@@ -17,7 +17,7 @@ import DashboardClient from './DashboardClient';
 export const dynamic = 'force-dynamic';
 
 async function getInitialActions(userId: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Fetch pending leads
   const { data: leadActions } = await supabase
@@ -62,7 +62,7 @@ async function getInitialActions(userId: string) {
 }
 
 export default async function DashboardPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const userId = user?.id || '';
 

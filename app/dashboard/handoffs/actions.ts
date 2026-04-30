@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 
 export async function assignHandoffAction(handoffId: string, assigneeId: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error || !session) {
@@ -25,7 +25,7 @@ export async function assignHandoffAction(handoffId: string, assigneeId: string)
 }
 
 export async function completeHandoffAction(handoffId: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error || !session) {

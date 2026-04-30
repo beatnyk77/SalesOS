@@ -8,7 +8,7 @@ import { createClient } from '../../../lib/supabase/server';
 import ProposalsClient from './ProposalsClient';
 
 export default async function ProposalsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   const { data: { user } } = await supabase.auth.getUser();
 

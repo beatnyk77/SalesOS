@@ -21,7 +21,7 @@ export const metadata = {
 // ─── Page Component ───────────────────────────────────────────────────────────
 
 export default async function ColdEmailsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // For demo purposes, we fetch for all users (or can scope by auth session)
   // In production, retrieve userId from the session cookie

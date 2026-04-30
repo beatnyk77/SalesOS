@@ -6,7 +6,7 @@ import { runCrew } from "@/lib/crews/runner";
 import type { QualificationOutput } from "@/lib/crews/inbound-qualifier";
 
 export async function qualifyLead(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
   if (!userId) {

@@ -42,8 +42,8 @@ jobs:
       - name: Build Next.js app
         run: pnpm next build
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: "${{ secrets.SUPABASE_URL }}"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "${{ secrets.SUPABASE_ANON_KEY }}"
 
       # ─── Supabase CLI ─────────────────────────────────────────────────────────
       - name: Setup Supabase CLI

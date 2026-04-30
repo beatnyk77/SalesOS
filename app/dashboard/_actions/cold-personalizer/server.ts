@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { runCrew } from "@/lib/crews/runner";
 
 export async function personalizeColdEmail(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
   if (!userId) {
