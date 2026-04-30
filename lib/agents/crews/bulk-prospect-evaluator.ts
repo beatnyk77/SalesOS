@@ -53,7 +53,7 @@ export class BulkProspectEvaluatorCrew {
 
     for (let i = 0; i < leads.length; i += BATCH_SIZE) {
       const batch = leads.slice(i, i + BATCH_SIZE);
-      const promises = batch.map(async (lead) => {
+      const promises = batch.map(async (lead: { email: string; company_name: string }) => {
         try {
           // Reuses the institutional-grade qualifier logic
           await this.qualifier.run(lead.email, lead.company_name);

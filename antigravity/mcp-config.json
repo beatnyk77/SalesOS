@@ -23,6 +23,10 @@
     "pylon-mcp-server": {
       "url": "https://pylon-mcp.example.com",
       "apiKey": "PYLON_API_KEY_PLACEHOLDER"
+    },
+    "testsprite-mcp-server": {
+      "url": "https://testsprite-mcp.example.com",
+      "apiKey": "TESTSPRITE_API_KEY_PLACEHOLDER"
     }
   }
 }

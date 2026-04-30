@@ -14,10 +14,6 @@ interface LeadData {
   employee_count?: string;
   [key: string]: unknown; // allow additional fields
 }
-interface IcpCriteria {
-  // Define expected ICP fields as needed
-  [key: string]: unknown;
-}
 // -------------------------------------------------------------------------
 
 serve(async (req) => {
