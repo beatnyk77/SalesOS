@@ -11,111 +11,124 @@ permissions:
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
-    env:
-      SUPABASE_URL:               ${{ secrets.SUPABASE_URL }}
-      SUPABASE_SERVICE_ROLE_KEY:  ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      SUPABASE_PROJECT_REF:       ${{ secrets.SUPABASE_PROJECT_REF }}
-      SUPABASE_ACCESS_TOKEN:      ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_DB_PASSWORD:       ${{ secrets.SUPABASE_DB_PASSWORD }}
-      EXA_API_KEY:                ${{ secrets.EXA_API_KEY }}
-      HUNTER_API_KEY:             ${{ secrets.HUNTER_API_KEY }}
-      GMAIL_API_KEY:              ${{ secrets.GMAIL_API_KEY }}
-      HUBSPOT_API_KEY:            ${{ secrets.HUBSPOT_API_KEY }}
-      VERCEL_TOKEN:               ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID:              ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID:          ${{ secrets.VERCEL_PROJECT_ID }}
 
     steps:
+      # ─── Checkout ────────────────────────────────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
-
+      # ─── Node / pnpm ──────────────────────────────────────────────────────────
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.33.0
-          run_install: false
 
-      - name: Add pnpm to PATH
-        run: echo "$HOME/.local/share/pnpm" >> $GITHUB_PATH
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-
+      # ─── Lint ─────────────────────────────────────────────────────────────────
       - name: Lint code
         run: pnpm run lint
 
+      # ─── Build ────────────────────────────────────────────────────────────────
       - name: Build Next.js app
         run: pnpm next build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
+      # ─── Supabase CLI ─────────────────────────────────────────────────────────
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@v1
         with:
           version: latest
 
+      # ─── Database Migrations ──────────────────────────────────────────────────
+      # We use --linked mode after linking via project-ref + password.
+      # The SUPABASE_ACCESS_TOKEN env var is automatically picked up by the CLI
+      # for authentication against the Management API.
       - name: Apply database migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          if [ -z "$SUPABASE_DB_PASSWORD" ]; then
-            echo "Error: SUPABASE_DB_PASSWORD is not set"
-            exit 1
-          fi
-          if [ -z "$SUPABASE_PROJECT_REF" ]; then
-            echo "Error: SUPABASE_PROJECT_REF is not set"
-            exit 1
-          fi
-          # Use --db-url directly to avoid linking issues in CI
-          supabase db push --db-url "postgresql://postgres:$SUPABASE_DB_PASSWORD@db.$SUPABASE_PROJECT_REF.supabase.co:6543/postgres"
+          echo "Linking project..."
+          supabase link --project-ref "${{ secrets.SUPABASE_PROJECT_REF }}" \
+            --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
 
-      - name: Install Vercel CLI
-        run: |
-          pnpm add -D vercel
+          echo "Pushing migrations..."
+          supabase db push --linked \
+            --password "${{ secrets.SUPABASE_DB_PASSWORD }}"
 
-      - name: Deploy Next.js app to Vercel
-        if: success()
-        run: |
-          if [ -z "$VERCEL_TOKEN" ]; then
-            echo "Error: VERCEL_TOKEN is not set. Please add it to GitHub Secrets."
-            exit 1
-          fi
-          if [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
-            echo "Error: VERCEL_ORG_ID or VERCEL_PROJECT_ID is not set."
-            exit 1
-          fi
-          npx vercel --prod --token "$VERCEL_TOKEN" --yes
+      # ─── Vercel Deploy ────────────────────────────────────────────────────────
+      # Uses the official Vercel action – no pnpm add needed, no lockfile mutation.
+      - name: Deploy to Vercel (Production)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./
 
+      # ─── Edge Functions ───────────────────────────────────────────────────────
+      # IMPORTANT: supabase functions deploy only accepts ONE function name at a
+      # time. Passing multiple names is not supported and causes silent failures.
+      # --use-api skips Docker (not available in GitHub-hosted runners).
       - name: Deploy Edge Functions
-        if: success()
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          # Deploy orchestration pipeline functions without JWT verification
-          supabase functions deploy validate-email --no-verify-jwt --project-ref "$SUPABASE_PROJECT_REF"
-          supabase functions deploy research-company --no-verify-jwt --project-ref "$SUPABASE_PROJECT_REF"
-          supabase functions deploy score-lead --no-verify-jwt --project-ref "$SUPABASE_PROJECT_REF"
-          supabase functions deploy trigger-lead-qualifier --no-verify-jwt --project-ref "$SUPABASE_PROJECT_REF"
-          
-          # Deploy other functions (defaulting to JWT verification)
-          supabase functions deploy parallel-research pipeline-monitor process-bulk-prospects upload-collateral validate-linkedin --project-ref "$SUPABASE_PROJECT_REF"
+          REF="${{ secrets.SUPABASE_PROJECT_REF }}"
 
+          # --- Orchestration pipeline (JWT verification disabled) ---
+          supabase functions deploy validate-email \
+            --project-ref "$REF" --no-verify-jwt --use-api
 
-      - name: Commit & push any new changes
+          supabase functions deploy research-company \
+            --project-ref "$REF" --no-verify-jwt --use-api
+
+          supabase functions deploy score-lead \
+            --project-ref "$REF" --no-verify-jwt --use-api
+
+          supabase functions deploy trigger-lead-qualifier \
+            --project-ref "$REF" --no-verify-jwt --use-api
+
+          # --- Supporting functions (standard JWT verification) ---
+          supabase functions deploy parallel-research \
+            --project-ref "$REF" --use-api
+
+          supabase functions deploy pipeline-monitor \
+            --project-ref "$REF" --use-api
+
+          supabase functions deploy process-bulk-prospects \
+            --project-ref "$REF" --use-api
+
+          supabase functions deploy upload-collateral \
+            --project-ref "$REF" --use-api
+
+          supabase functions deploy validate-linkedin \
+            --project-ref "$REF" --use-api
+
+      # ─── Auto-commit (lockfile / generated files) ─────────────────────────────
+      - name: Commit any generated changes
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           if ! git diff --quiet; then
             git add .
-            git commit -m "Automated commit via CI/CD pipeline [skip ci]"
+            git commit -m "chore: automated commit via CI/CD [skip ci]"
             git push origin main
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Success message
-        if: success()
-        run: echo "✅ Build, lint, test, DB migration, Vercel and Edge‑function deployment succeeded."
+      - name: ✅ Success
+        run: echo "Build · Lint · Migrations · Vercel · Edge Functions — all succeeded."
