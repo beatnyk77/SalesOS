@@ -1,11 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { runCrew } from "@/lib/crews/runner";
 
 export async function personalizeColdEmail(formData: FormData) {
-  const supabase = getSupabaseServer();
+  const supabase = createClient();
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
   if (!userId) {

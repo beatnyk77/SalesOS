@@ -7,7 +7,7 @@
  * grouped by status. Passes to ColdEmailsClient carousel.
  */
 
-import { getSupabaseServer } from '../../../../lib/supabase/server';
+import { createClient } from '../../../../lib/supabase/server';
 import { ColdEmailsClient, type ColdEmail } from './ColdEmailsClient';
 import { CsvUploadWidget } from './CsvUploadWidget';
 
@@ -21,7 +21,7 @@ export const metadata = {
 // ─── Page Component ───────────────────────────────────────────────────────────
 
 export default async function ColdEmailsPage() {
-  const supabase = getSupabaseServer();
+  const supabase = createClient();
 
   // For demo purposes, we fetch for all users (or can scope by auth session)
   // In production, retrieve userId from the session cookie

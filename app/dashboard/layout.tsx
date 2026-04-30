@@ -4,7 +4,7 @@
  * Task 22: Sidebar navigation + global layout.
  */
 
-import { getSupabaseServer } from '../../lib/supabase/server';
+import { createClient } from '../../lib/supabase/server';
 import Sidebar from '../../components/dashboard/Sidebar';
 import { redirect } from 'next/navigation';
 
@@ -13,11 +13,10 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = getSupabaseServer();
+  const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    // For demo purposes, we log the bypass but in production this would redirect.
     console.warn('[DashboardLayout] No active session. Redirecting to login.');
     redirect('/login'); 
   }

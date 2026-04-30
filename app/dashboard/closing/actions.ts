@@ -1,9 +1,9 @@
 'use server'
 
-import { getSupabaseServer } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 export async function updateContractStatusAction(contractId: string, status: string) {
-  const supabase = getSupabaseServer()
+  const supabase = createClient()
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error || !session) throw new Error('Not authenticated')

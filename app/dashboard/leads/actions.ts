@@ -6,7 +6,7 @@
  */
 'use server';
 
-import { getSupabaseServer } from '../../../lib/supabase/server';
+import { createClient } from '../../../lib/supabase/server';
 import { logToAuditTrail } from '../../../lib/agents/utils';
 import { revalidatePath } from 'next/cache';
 
@@ -18,7 +18,7 @@ export async function approveLead(
   action: ApprovalAction,
   note?: string
 ): Promise<void> {
-  const supabase = getSupabaseServer();
+  const supabase = createClient();
   const newStatus = action === 'approved' ? 'qualified' : 'rejected';
 
   // Update lead status — eq('user_id', userId) acts as application-level RLS guard

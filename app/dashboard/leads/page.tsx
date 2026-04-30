@@ -6,7 +6,7 @@
  * Fetches the initial leads list server-side (respecting RLS via service role
  * with user filter), then hands off to LeadsClient for realtime interactivity.
  */
-import { getSupabaseServer } from '../../../lib/supabase/server';
+import { createClient } from '../../../lib/supabase/server';
 import { LeadsClient } from './LeadsClient';
 import type { Metadata } from 'next';
 
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function LeadsPage() {
-  const supabase = getSupabaseServer();
+  const supabase = createClient();
 
   // Get the current user session
   const {

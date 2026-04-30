@@ -4,11 +4,11 @@
  * Task 22: Quick-Start MCP onboarding flow.
  */
 
-import { getSupabaseServer } from '../../../lib/supabase/server';
+import { createClient } from '../../../lib/supabase/server';
 import QuickStartCard from './QuickStartCard';
 
 export default async function SettingsPage() {
-  const supabase = getSupabaseServer();
+  const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const userId = user?.id || '00000000-0000-0000-0000-000000000000';
 

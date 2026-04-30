@@ -4,11 +4,11 @@
  * Task 19: Proposal UI + editable output.
  */
 
-import { getSupabaseServer } from '../../../lib/supabase/server';
+import { createClient } from '../../../lib/supabase/server';
 import ProposalsClient from './ProposalsClient';
 
 export default async function ProposalsPage() {
-  const supabase = getSupabaseServer();
+  const supabase = createClient();
   
   const { data: { user } } = await supabase.auth.getUser();
 

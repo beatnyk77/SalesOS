@@ -1,11 +1,11 @@
 'use server'
 
-import { getSupabaseServer } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 // cookies no longer needed
 import { BulkProspectEvaluatorCrew } from '../../../lib/agents/crews/bulk-prospect-evaluator'
 
 export async function evaluateProspectListAction(listId: string) {
-  const supabase = getSupabaseServer()
+  const supabase = createClient()
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error || !session) {

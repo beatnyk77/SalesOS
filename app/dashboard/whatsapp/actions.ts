@@ -1,9 +1,9 @@
 'use server'
 
-import { getSupabaseServer } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 export async function approveWhatsAppMessageAction(messageId: string, updatedBody?: string) {
-  const supabase = getSupabaseServer()
+  const supabase = createClient()
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error || !session) {
@@ -31,7 +31,7 @@ export async function approveWhatsAppMessageAction(messageId: string, updatedBod
 }
 
 export async function rejectWhatsAppMessageAction(messageId: string) {
-  const supabase = getSupabaseServer()
+  const supabase = createClient()
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error || !session) {

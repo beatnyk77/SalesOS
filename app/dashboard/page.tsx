@@ -10,14 +10,14 @@
  */
 
 import { Suspense } from 'react';
-import { getSupabaseServer } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import DashboardClient from './DashboardClient';
 
 // Revalidate paths when this server component re-renders due to realtime events
 export const dynamic = 'force-dynamic';
 
 async function getInitialActions(userId: string) {
-  const supabase = getSupabaseServer();
+  const supabase = createClient();
 
   // Fetch pending leads
   const { data: leadActions } = await supabase
@@ -62,7 +62,7 @@ async function getInitialActions(userId: string) {
 }
 
 export default async function DashboardPage() {
-  const supabase = getSupabaseServer();
+  const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const userId = user?.id || '';
 
