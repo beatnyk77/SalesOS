@@ -44,13 +44,20 @@ export async function createClient() {
 /**
  * getSupabaseServer
  *
- * Legacy export/utility for cases where Service Role access is explicitly required.
- * WARNING: This bypasses RLS and should NOT be used for general user authentication.
+ * For cases where Service Role access is explicitly required (Server Actions, admin writes).
+ * WARNING: This bypasses RLS. Never expose this client to the browser.
  */
 export function getSupabaseServer() {
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!serviceRoleKey || serviceRoleKey === 'YOUR_SERVICE_ROLE_KEY_HERE') {
+    throw new Error(
+      '[getSupabaseServer] SUPABASE_SERVICE_ROLE_KEY is not set. ' +
+      'Add it to .env.local and to your Vercel project environment variables.'
+    )
+  }
   return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    serviceRoleKey,
     {
       auth: {
         autoRefreshToken: false,

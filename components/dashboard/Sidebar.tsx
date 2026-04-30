@@ -13,8 +13,14 @@ import DryRunToggle from './DryRunToggle';
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: '🏠' },
   { name: 'Leads', href: '/dashboard/leads', icon: '🎯' },
+  { name: 'Prospects', href: '/dashboard/prospects', icon: '🔍' },
   { name: 'Cold Emails', href: '/dashboard/agents/cold-emails', icon: '✉️' },
+  { name: 'Meeting Prep', href: '/dashboard/agents/meeting-prep', icon: '📋' },
   { name: 'Proposals', href: '/dashboard/proposals', icon: '📝' },
+  { name: 'Closing', href: '/dashboard/closing', icon: '🤝' },
+  { name: 'Handoffs', href: '/dashboard/handoffs', icon: '🔄' },
+  { name: 'WhatsApp', href: '/dashboard/whatsapp', icon: '💬' },
+  { name: 'Collateral', href: '/dashboard/collateral', icon: '📁' },
   { name: 'Settings', href: '/dashboard/settings', icon: '⚙️' },
 ];
 
