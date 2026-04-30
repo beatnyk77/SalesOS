@@ -160,13 +160,20 @@ serve(async (req: Request) => {
     })
 
     // ── 5. Stage 1 — Email Validation ──────────────────────────────────────
-    const { data: validationData, error: validationError } = await supabase.functions.invoke(
-      'validate-email',
-      { body: { email: body.email, user_id: body.user_id } }
-    )
+    console.log(`[trigger-lead-qualifier] Invoking validate-email for ${body.email}`)
+    const validationResponse = await fetch(`${SUPABASE_URL}/functions/v1/validate-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        'apikey': SUPABASE_SERVICE_ROLE_KEY
+      },
+      body: JSON.stringify({ email: body.email, user_id: body.user_id })
+    })
 
-    if (validationError || !validationData?.success) {
-      const errMsg = validationError?.message || validationData?.error || 'Validation stage failed'
+    const validationData = await validationResponse.json()
+    if (!validationResponse.ok || !validationData.success) {
+      const errMsg = validationData.error || `Validation stage failed with status ${validationResponse.status}`
       await logAudit(supabase, {
         userId: body.user_id,
         agentName: 'trigger-lead-qualifier',
@@ -273,18 +280,23 @@ serve(async (req: Request) => {
     // If no LinkedIn URL provided, we continue with the pipeline (optional field)
 
     // ── 7. Stage 2 — Company Research (Exa) ───────────────────────────────
-    const { data: researchData, error: researchError } = await supabase.functions.invoke(
-      'research-company',
-      {
-        body: {
-          company_name: body.company_name || body.email.split('@')[1],
-          user_id: body.user_id
-        }
-      }
-    )
+    console.log(`[trigger-lead-qualifier] Invoking research-company for ${body.company_name || body.email.split('@')[1]}`)
+    const researchResponse = await fetch(`${SUPABASE_URL}/functions/v1/research-company`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        'apikey': SUPABASE_SERVICE_ROLE_KEY
+      },
+      body: JSON.stringify({
+        company_name: body.company_name || body.email.split('@')[1],
+        user_id: body.user_id
+      })
+    })
 
-    if (researchError || !researchData?.success) {
-      const errMsg = researchError?.message || 'Research stage failed'
+    const researchData = await researchResponse.json()
+    if (!researchResponse.ok || !researchData?.success) {
+      const errMsg = researchData?.error || `Research stage failed with status ${researchResponse.status}`
       await logAudit(supabase, {
         userId: body.user_id,
         agentName: 'trigger-lead-qualifier',
@@ -302,19 +314,24 @@ serve(async (req: Request) => {
       .eq('user_id', body.user_id)
       .limit(3)
 
-    const { data: scoreData, error: scoreError } = await supabase.functions.invoke(
-      'score-lead',
-      {
-        body: {
-          lead_data: researchData.data,
-          icp_criteria: icpCriteria || [],
-          user_id: body.user_id
-        }
-      }
-    )
+    console.log(`[trigger-lead-qualifier] Invoking score-lead for ${body.email}`)
+    const scoreResponse = await fetch(`${SUPABASE_URL}/functions/v1/score-lead`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        'apikey': SUPABASE_SERVICE_ROLE_KEY
+      },
+      body: JSON.stringify({
+        lead_data: researchData.data,
+        icp_criteria: icpCriteria || [],
+        user_id: body.user_id
+      })
+    })
 
-    if (scoreError || !scoreData?.success) {
-      const errMsg = scoreError?.message || 'Scoring stage failed'
+    const scoreData = await scoreResponse.json()
+    if (!scoreResponse.ok || !scoreData?.success) {
+      const errMsg = scoreData?.error || `Scoring stage failed with status ${scoreResponse.status}`
       await logAudit(supabase, {
         userId: body.user_id,
         agentName: 'trigger-lead-qualifier',

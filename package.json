@@ -15,7 +15,7 @@
     "build:patch-lock": "pnpm install --no-frozen-lockfile && pnpm next build"
   },
   "dependencies": {
-    "@langchain/langgraph": "^0.0.12",
+    "@langchain/langgraph": "^1.2.9",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.104.0",
     "clsx": "^2.1.0",

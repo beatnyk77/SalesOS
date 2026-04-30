@@ -1,4 +1,8 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.42.0"
+
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -21,12 +25,14 @@ serve(async (req) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
+  const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!)
+
   try {
     // Parse and type‑guard request payload
     const {
       lead_data,
       icp_criteria,
-      user_id: _user_id,
+      user_id,
     } = (await req.json()) as { lead_data: LeadData; icp_criteria: IcpCriteria; user_id: string };
 
     // Mock Scoring Logic (Phase 1 – simulate LLM decision)
@@ -47,12 +53,27 @@ serve(async (req) => {
       reasoning = "Low alignment. Industry or company size outside of core target.";
     }
 
+    const finalStatus = score > 70 ? 'qualified' : 'rejected';
+
+    // Log to Audit Trail
+    await supabase.from('agent_audit_trail').insert({
+      user_id: user_id,
+      agent_name: 'Lead Scoring Agent',
+      action: 'icp_scoring',
+      details: {
+        score,
+        status: finalStatus,
+        reasoning,
+        lead_summary: leadText.substring(0, 200) + "..."
+      }
+    })
+
     return new Response(
       JSON.stringify({
         success: true,
         score: Math.min(100, score),
         reasoning,
-        status: score > 70 ? 'qualified' : 'rejected',
+        status: finalStatus,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
