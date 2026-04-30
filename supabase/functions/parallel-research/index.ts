@@ -156,7 +156,7 @@ async function researchOne(
       company_name: company,
       success: false,
       cached: false,
-      error: err.message,
+      error: errorMessage,
     }
   }
 }

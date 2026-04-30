@@ -74,13 +74,11 @@ jobs:
       # ─── Vercel Deploy ────────────────────────────────────────────────────────
       # Uses the official Vercel action – no pnpm add needed, no lockfile mutation.
       - name: Deploy to Vercel (Production)
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-          working-directory: ./
+        run: |
+          pnpm dlx vercel@latest --prod --token "${{ secrets.VERCEL_TOKEN }}" --yes
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       # ─── Edge Functions ───────────────────────────────────────────────────────
       # IMPORTANT: supabase functions deploy only accepts ONE function name at a

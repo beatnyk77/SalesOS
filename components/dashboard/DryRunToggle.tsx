@@ -16,7 +16,7 @@ export default function DryRunToggle() {
 
   useEffect(() => {
     async function fetchSettings() {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('user_agent_settings')
         .select('dry_run_mode')
         .single();
@@ -27,18 +27,18 @@ export default function DryRunToggle() {
       setIsLoading(false);
     }
     fetchSettings();
-  }, [supabase]);
+  }, []);
 
   const toggleDryRun = async () => {
     const newValue = !isDryRun;
     setIsDryRun(newValue);
     
-    const { error } = await supabase
+    const { error: updateError } = await supabase
       .from('user_agent_settings')
       .upsert({ dry_run_mode: newValue }, { onConflict: 'user_id' });
 
-    if (error) {
-      console.error('[DryRunToggle] Failed to update:', error);
+    if (updateError) {
+      console.error('[DryRunToggle] Failed to update:', updateError);
       setIsDryRun(!newValue); // Rollback
     }
   };

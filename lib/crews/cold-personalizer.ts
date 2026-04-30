@@ -28,8 +28,7 @@ export class ColdEmailPersonalizerCrew {
   constructor(private userId: string) {}
 
   async run(
-    leads: ColdEmailInput[],
-    options?: { batchSize?: number; dryRun?: boolean }
+    leads: ColdEmailInput[]
   ): Promise<ColdPersonalizerOutput> {
     // Return a simple deterministic stub
     const results = leads.map((lead) => ({

@@ -31,13 +31,11 @@ serve(async (req) => {
     // Parse and type‑guard request payload
     const {
       lead_data,
-      icp_criteria,
       user_id,
-    } = (await req.json()) as { lead_data: LeadData; icp_criteria: IcpCriteria; user_id: string };
+    } = (await req.json()) as { lead_data: LeadData; user_id: string };
 
     // Mock Scoring Logic (Phase 1 – simulate LLM decision)
     const leadText = JSON.stringify(lead_data).toLowerCase();
-    const icpText = JSON.stringify(icp_criteria).toLowerCase();
 
     let score = 50; // Base score
     let reasoning = "Lead has some alignment with ICP.";

@@ -25,7 +25,7 @@ export function ProspectsClient() {
   const supabase = createClient()
 
   const fetchProspectLists = useCallback(async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('prospect_lists')
       .select('*')
       .order('created_at', { ascending: false })

@@ -7,10 +7,10 @@
  * Compatible with both Next.js (Node) and Deno (Supabase Edge Functions).
  */
 
-import type { ProposalDrafterCrew, ProposalInput } from './proposal-drafter';
-import type { InboundLeadQualifierCrew, QualificationOutput } from './inbound-qualifier';
-import type { LeadValidationCrew, ValidationOutput } from './lead-validation';
-import type { ColdEmailPersonalizerCrew, ColdEmailInput, ColdPersonalizerOutput } from './cold-personalizer';
+import type { ProposalInput } from './proposal-drafter';
+import type { QualificationOutput } from './inbound-qualifier';
+import type { ValidationOutput } from './lead-validation';
+import type { ColdEmailInput, ColdPersonalizerOutput } from './cold-personalizer';
 
 // Re-export types for convenience
 export type { ProposalInput, QualificationOutput, ValidationOutput, ColdEmailInput, ColdPersonalizerOutput };
@@ -80,10 +80,7 @@ export async function runCrew(input: RunnerInput): Promise<RunnerOutput> {
       const { ColdEmailPersonalizerCrew } = await import('./cold-personalizer');
       const crew = new ColdEmailPersonalizerCrew(userId);
       const personalizerInput: ColdEmailInput[] = (payload.leads as unknown as ColdEmailInput[]) || [(payload as unknown as ColdEmailInput)];
-      const output = await crew.run(personalizerInput, {
-        batchSize: payload.batchSize as number,
-        dryRun: (payload.dryRun as boolean) ?? true,
-      });
+      const output = await crew.run(personalizerInput);
       result = output;
       break;
     }

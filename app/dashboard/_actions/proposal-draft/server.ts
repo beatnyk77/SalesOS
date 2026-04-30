@@ -61,6 +61,10 @@ export async function proposeDraft(prevState: { success?: boolean; error?: strin
         created_at: new Date().toISOString(),
       });
 
+    if (insertError) {
+      console.error("Failed to insert proposal draft:", insertError);
+    }
+
     // Revalidate the proposals page so the new draft appears
     revalidatePath("/dashboard/proposals");
     revalidatePath("/dashboard");

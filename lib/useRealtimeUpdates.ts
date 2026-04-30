@@ -36,5 +36,5 @@ export function useAgentAuditTrailChanges(
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [onChange]);
 }
