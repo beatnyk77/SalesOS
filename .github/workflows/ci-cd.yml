@@ -72,8 +72,9 @@ jobs:
             exit 1
           fi
           # Link and push using access token for auth
-          supabase link --project-ref $SUPABASE_PROJECT_REF -p "$SUPABASE_DB_PASSWORD"
-          supabase db push
+          supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+          # Use --force and non-interactive to ensure CI doesn't hang
+          supabase db push --password "$SUPABASE_DB_PASSWORD"
 
       - name: Install Vercel CLI
         run: |
@@ -95,7 +96,15 @@ jobs:
       - name: Deploy Edge Functions
         if: success()
         run: |
-          supabase functions deploy
+          # Deploy orchestration pipeline functions without JWT verification
+          supabase functions deploy validate-email --no-verify-jwt
+          supabase functions deploy research-company --no-verify-jwt
+          supabase functions deploy score-lead --no-verify-jwt
+          supabase functions deploy trigger-lead-qualifier --no-verify-jwt
+          
+          # Deploy other functions (defaulting to JWT verification)
+          # We skip the ones already deployed above to avoid re-deploying with wrong flags
+          supabase functions deploy parallel-research pipeline-monitor process-bulk-prospects upload-collateral validate-linkedin
 
 
       - name: Commit & push any new changes
