@@ -57,9 +57,9 @@ export async function qualifyLead(formData: FormData) {
     const { error: updateQualError } = await supabase
       .from("leads")
       .update({
-        status: qualification.status, // 'qualified' | 'rejected' | 'pending'
+        status: qualification.status,
         score: qualification.score,
-        summary: qualification.match_keywords?.join(', ') || '',
+        summary: qualification.reasoning || '',
         updated_at: new Date().toISOString(),
       })
       .eq("id", leadId);
