@@ -7,10 +7,10 @@
  * Compatible with both Next.js (Node) and Deno (Supabase Edge Functions).
  */
 
-import type { ProposalInput } from './proposal-drafter';
-import type { QualificationOutput } from './inbound-qualifier';
-import type { ValidationOutput } from './lead-validation';
-import type { ColdEmailInput, ColdPersonalizerOutput } from './cold-personalizer';
+import type { ProposalInput } from '@/lib/agents/crews/proposal-drafter';
+import type { QualificationOutput } from '@/lib/agents/crews/inbound-qualifier';
+import type { ValidationOutput } from '@/lib/agents/crews/lead-validation';
+import type { ColdEmailInput, ColdPersonalizerOutput } from '@/lib/agents/crews/cold-personalizer';
 
 // Re-export types for convenience
 export type { ProposalInput, QualificationOutput, ValidationOutput, ColdEmailInput, ColdPersonalizerOutput };
@@ -43,7 +43,7 @@ export async function runCrew(input: RunnerInput): Promise<RunnerOutput> {
 
   switch (crewType) {
     case 'proposal-drafter': {
-      const { ProposalDrafterCrew } = await import('./proposal-drafter');
+      const { ProposalDrafterCrew } = await import('@/lib/agents/crews/proposal-drafter');
       const crew = new ProposalDrafterCrew();
       const draftInput: ProposalInput = {
         user_id: userId,
@@ -58,7 +58,7 @@ export async function runCrew(input: RunnerInput): Promise<RunnerOutput> {
     }
 
     case 'lead-qualifier': {
-      const { InboundLeadQualifierCrew } = await import('./inbound-qualifier');
+      const { InboundLeadQualifierCrew } = await import('@/lib/agents/crews/inbound-qualifier');
       const crew = new InboundLeadQualifierCrew(userId);
       const qualification: QualificationOutput = await crew.run(
         payload.email as string,
@@ -69,7 +69,7 @@ export async function runCrew(input: RunnerInput): Promise<RunnerOutput> {
     }
 
     case 'lead-validation': {
-      const { LeadValidationCrew } = await import('./lead-validation');
+      const { LeadValidationCrew } = await import('@/lib/agents/crews/lead-validation');
       const crew = new LeadValidationCrew(userId);
       const validation: ValidationOutput = await crew.run(payload.email as string);
       result = validation;
@@ -77,7 +77,7 @@ export async function runCrew(input: RunnerInput): Promise<RunnerOutput> {
     }
 
     case 'cold-personalizer': {
-      const { ColdEmailPersonalizerCrew } = await import('./cold-personalizer');
+      const { ColdEmailPersonalizerCrew } = await import('@/lib/agents/crews/cold-personalizer');
       const crew = new ColdEmailPersonalizerCrew(userId);
       const personalizerInput: ColdEmailInput[] = (payload.leads as unknown as ColdEmailInput[]) || [(payload as unknown as ColdEmailInput)];
       const output = await crew.run(personalizerInput);
