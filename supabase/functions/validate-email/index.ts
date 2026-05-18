@@ -23,33 +23,45 @@ serve(async (req) => {
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 
-    if (!HUNTER_API_KEY) {
-      throw new Error("HUNTER_API_KEY not configured in Edge Function secrets")
-    }
-
-    // 1. Mock/Stub Hunter Email Verifier API logic (as requested for Task 6)
-    // Realistic test scores: real email = 85, disposable = 25, invalid = 10
     let score = 85
     let isDisposable = false
     let status = 'deliverable'
+    let hunterData: Record<string, any> = {}
 
-    if (email.includes('disposable')) {
-      score = 25
-      isDisposable = true
-      status = 'risky'
-    } else if (email.includes('invalid')) {
-      score = 10
-      status = 'undeliverable'
-    } else if (email.includes('ghost')) {
-      score = 40
-      status = 'risky'
-    }
-
-    const hunterData = {
-      score,
-      disposable: isDisposable,
-      result: status,
-      mock: true
+    if (HUNTER_API_KEY) {
+      // 1. Real Hunter API Call
+      const response = await fetch(\`https://api.hunter.io/v2/email-verifier?email=\${encodeURIComponent(email)}&api_key=\${HUNTER_API_KEY}\`)
+      const data = await response.json()
+      
+      if (response.ok && data.data) {
+        score = data.data.score || 0
+        isDisposable = data.data.disposable || false
+        status = data.data.status || 'unknown'
+        hunterData = { ...data.data, mock: false }
+      } else {
+        throw new Error(data.errors?.[0]?.details || 'Hunter API failed')
+      }
+    } else {
+      // 1b. Mock/Stub Fallback
+      console.warn('HUNTER_API_KEY not configured. Using mock data.')
+      if (email.includes('disposable')) {
+        score = 25
+        isDisposable = true
+        status = 'risky'
+      } else if (email.includes('invalid')) {
+        score = 10
+        status = 'undeliverable'
+      } else if (email.includes('ghost')) {
+        score = 40
+        status = 'risky'
+      }
+      
+      hunterData = {
+        score,
+        disposable: isDisposable,
+        result: status,
+        mock: true
+      }
     }
 
     // 2. Ghost-Lead Scoring Logic

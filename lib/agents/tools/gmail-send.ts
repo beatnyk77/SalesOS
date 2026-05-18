@@ -106,45 +106,55 @@ export async function sendColdEmail({
     };
   }
 
-  // 4. Real send (stubbed) — in production, this would call Gmail MCP
-  // For safety, we still stub this out and mark it as sent without actually sending
-  console.warn(
-    `[gmail-send] STUB: Would send email to ${email.lead_email} via Gmail MCP. Currently stubbed.`
-  );
+  // 4. Real send — invokes send-cold-email Edge Function (Resend)
+  console.log(`[gmail-send] Invoking send-cold-email Edge Function for ${email.lead_email}...`);
 
-  // Mark as sent in the database
-  const { error: updateError } = await supabase
-    .from('cold_emails')
-    .update({
-      status: 'sent',
-      sent_at: new Date().toISOString(),
-    })
-    .eq('id', coldEmailId)
-    .eq('user_id', userId);
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (updateError) {
-    throw new Error(`Failed to update email status: ${updateError.message}`);
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Supabase environment variables missing for Edge Function invocation.');
   }
 
-  await logToAuditTrail({
-    userId,
-    agentName: 'Gmail Send Stub',
-    action: 'send_executed',
-    details: {
-      cold_email_id: coldEmailId,
+  const response = await fetch(`${supabaseUrl}/functions/v1/send-cold-email`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${supabaseKey}`,
+    },
+    body: JSON.stringify({
       to: email.lead_email,
       subject: email.subject,
-      note: 'STUB: No real email was sent. Gmail MCP integration pending.',
-    },
+      html: email.full_html || email.body, // Fallback to plain text body if html missing
+      user_id: userId,
+      cold_email_id: coldEmailId,
+      dry_run: false
+    })
   });
+
+  const data = await response.json();
+
+  if (!response.ok || !data.success) {
+    const errorMsg = data.error || `Edge Function returned status ${response.status}`;
+    await logToAuditTrail({
+      userId,
+      agentName: 'Cold Email Sender',
+      action: 'send_failed',
+      details: {
+        cold_email_id: coldEmailId,
+        error: errorMsg
+      }
+    });
+    throw new Error(`Failed to send email: ${errorMsg}`);
+  }
 
   return {
     coldEmailId,
     to: email.lead_email,
     subject: email.subject,
-    sent: true, // Marked as sent in DB, but actually stubbed
+    sent: true,
     dry_run: false,
-    message: 'STUB: Email marked as sent (no real delivery).',
+    message: 'Email sent successfully via Resend.',
   };
 }
 

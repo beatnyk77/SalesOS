@@ -12,7 +12,9 @@
     "build": "pnpm run build:patch-lock",
     "start": "pnpm next start",
     "lint": "pnpm eslint",
-    "build:patch-lock": "pnpm install --no-frozen-lockfile && pnpm next build"
+    "build:patch-lock": "pnpm install --no-frozen-lockfile && pnpm next build",
+    "test:smoke": "playwright test tests/smoke/",
+    "test:smoke:ui": "playwright test tests/smoke/ --ui"
   },
   "dependencies": {
     "@langchain/langgraph": "^1.2.9",
@@ -28,6 +30,7 @@
     "tailwind-merge": "^2.2.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

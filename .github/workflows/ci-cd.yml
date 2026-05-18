@@ -71,6 +71,17 @@ jobs:
           echo "Pushing migrations..."
           supabase db push --linked
 
+      # ─── Playwright Smoke Tests ───────────────────────────────────────────────
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run smoke tests
+        run: pnpm test:smoke
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
       # ─── Vercel Deploy ────────────────────────────────────────────────────────
       # Uses the official Vercel action – no pnpm add needed, no lockfile mutation.
       - name: Deploy to Vercel (Production)
@@ -79,6 +90,20 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      # ─── Supabase Edge Secrets ────────────────────────────────────────────────
+      - name: Set Edge Secrets
+        run: |
+          chmod +x ./scripts/set-edge-secrets.sh
+          ./scripts/set-edge-secrets.sh
+        env:
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
+          HUNTER_API_KEY: ${{ secrets.HUNTER_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
 
       # ─── Edge Functions ───────────────────────────────────────────────────────
       # IMPORTANT: supabase functions deploy only accepts ONE function name at a
@@ -105,6 +130,9 @@ jobs:
 
           # --- Supporting functions (standard JWT verification) ---
           supabase functions deploy parallel-research \
+            --project-ref "$REF" --use-api
+
+          supabase functions deploy send-cold-email \
             --project-ref "$REF" --use-api
 
           supabase functions deploy pipeline-monitor \

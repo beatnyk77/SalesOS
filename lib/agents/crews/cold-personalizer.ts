@@ -22,6 +22,7 @@ import { getSupabaseServer } from '@/lib/supabase/server';
 import { logToAuditTrail } from '../utils';
 import { CollateralRAGCrew } from './collateral-rag';
 import { Collateral } from '@/lib/rag/collateral-rag';
+import { chatCompletion } from '@/lib/llm/client';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -64,11 +65,11 @@ interface ResearchData {
 /**
  * Generates a personalized cold email using research data and relevant collateral.
  */
-function generatePersonalizedEmail(
+async function generatePersonalizedEmail(
   lead: ColdEmailInput,
   researchData: ResearchData,
   collateral: Collateral[] = []
-): PersonalizedEmail {
+): Promise<PersonalizedEmail> {
   const firstName = lead.first_name || lead.email.split('@')[0];
   const company = lead.company_name || researchData?.company || 'your company';
   const industry = researchData?.industry || 'your industry';
@@ -83,52 +84,66 @@ function generatePersonalizedEmail(
     signals.push(`tech: ${researchData.tech_stack.join(', ')}`);
   if (recentNews) signals.push(`recent: ${recentNews}`);
 
-  // Personalized opener
-  let opener: string;
-  if (recentNews) {
-    opener = `Hi ${firstName}, I noticed ${company} recently ${recentNews.toLowerCase()} — congratulations! That kind of momentum is exactly what makes outbound even harder to keep up with.`;
-  } else if (researchData?.tech_stack?.length) {
-    opener = `Hi ${firstName}, I saw that ${company} runs on ${researchData.tech_stack[0]} — we've helped similar ${industry} teams streamline their sales pipeline dramatically.`;
-  } else {
-    opener = `Hi ${firstName}, I've been following ${company}'s work in ${industry} and wanted to reach out with an idea that might save your team 10+ hours a week.`;
-  }
-
-  // Collateral injection
-  let collateralSection = '';
+  // Collateral injection details
+  let collateralContext = '';
   if (collateral.length > 0) {
     const mainDoc = collateral[0];
-    collateralSection = `\n\nI thought you might find our ${mainDoc.metadata.document_type || 'latest resource'} on ${mainDoc.metadata.industry || 'this industry'} useful. It covers how we helped similar teams solve their outreach challenges.`;
+    collateralContext = `Relevant Case Study/Collateral to mention: ${mainDoc.metadata.document_type} about ${mainDoc.metadata.industry}`;
   }
 
-  const body = `${opener}${collateralSection}
+  const prompt = `
+Lead Name: ${firstName}
+Company: ${company}
+Industry: ${industry}
+Recent News: ${recentNews || 'None'}
+Tech Stack: ${researchData?.tech_stack?.join(', ') || 'Unknown'}
+${collateralContext}
 
-We built SalesOS specifically for teams like yours — an AI co-founder that handles lead qualification, personalized outreach, and proposal drafting so you can focus on closing.
+Task: Write a highly personalized cold email (Subject, Opener, and Body).
+Format your response exactly as a JSON object:
+{
+  "subject": "Email subject",
+  "opener": "The personalized opening line or paragraph",
+  "body": "The rest of the email body, concluding with a call to action",
+  "full_html": "The entire email wrapped in simple HTML tags (e.g. <p>)"
+}
+The email should be written from 'The SalesOS Team'. Pitch SalesOS, an AI co-founder that handles lead qualification, personalized outreach, and proposal drafting.
+`;
 
-Would it make sense to chat for 15 minutes this week? I'd love to show you how it works.
+  try {
+    const response = await chatCompletion({
+      prompt,
+      systemPrompt: "You are an elite B2B SDR writing institutional but helpful cold emails. Never use generic sales tropes. Output ONLY valid JSON.",
+      model: "gpt-4o",
+      temperature: 0.7
+    });
 
-Best,
-The SalesOS Team`;
+    // Remove markdown code blocks if present
+    const cleanJson = response.replace(/^```json\n|\n```$/g, '');
+    const parsed = JSON.parse(cleanJson);
 
-  const subject = recentNews
-    ? `Re: ${company}'s recent milestone`
-    : `Quick idea for ${company}'s sales team`;
-
-  const full_html = `<div style="font-family: -apple-system, sans-serif; font-size: 14px; line-height: 1.6; color: #1a1a1a;">
-<p>${opener}</p>
-${collateralSection ? `<p>${collateralSection.trim()}</p>` : ''}
-<p>We built SalesOS specifically for teams like yours — an AI co-founder that handles lead qualification, personalized outreach, and proposal drafting so you can focus on closing.</p>
-<p>Would it make sense to chat for 15 minutes this week? I'd love to show you how it works.</p>
-<p>Best,<br/>The SalesOS Team</p>
-</div>`;
-
-  return {
-    to: lead.email,
-    subject,
-    opener,
-    body,
-    full_html,
-    personalization_signals: signals,
-  };
+    return {
+      to: lead.email,
+      subject: parsed.subject,
+      opener: parsed.opener,
+      body: parsed.body,
+      full_html: parsed.full_html,
+      personalization_signals: signals,
+    };
+  } catch (error) {
+    console.warn("LLM generation failed, falling back to template:", error);
+    // Fallback to template
+    let opener = `Hi ${firstName}, I've been following ${company}'s work in ${industry}.`;
+    const body = `${opener}\n\nWe built SalesOS specifically for teams like yours.`;
+    return {
+      to: lead.email,
+      subject: `Quick idea for ${company}'s sales team`,
+      opener,
+      body,
+      full_html: `<p>${body.replace(/\\n/g, '<br/>')}</p>`,
+      personalization_signals: signals,
+    };
+  }
 }
 
 // ─── Crew Class ───────────────────────────────────────────────────────────────
@@ -226,7 +241,7 @@ export class ColdEmailPersonalizerCrew {
             ? availableCollateral.filter(c => c.metadata.industry === leadIndustry)
             : availableCollateral;
 
-          const email = generatePersonalizedEmail(lead, research, leadCollateral);
+          const email = await generatePersonalizedEmail(lead, research, leadCollateral);
 
           // ── 4. Persist to cold_emails table (dry-run safe) ──────────────
           const { error: insertError } = await supabase.from('cold_emails').insert({

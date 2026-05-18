@@ -22,13 +22,13 @@ importers:
         version: 2.1.1
       crewai:
         specifier: ^1.0.1
-        version: 1.0.1(@supabase/supabase-js@2.105.1)(axios@1.15.2)(canvas@2.11.2(encoding@0.1.13))(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(ws@8.20.0)
+        version: 1.0.1(@supabase/supabase-js@2.105.1)(axios@1.15.2)(canvas@2.11.2(encoding@0.1.13))(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(playwright@1.60.0)(ws@8.20.0)
       lucide-react:
         specifier: ^0.474.0
         version: 0.474.0(react@19.2.5)
       next:
         specifier: ^16.2.4
-        version: 16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 16.2.4(@babel/core@7.29.0)(@playwright/test@1.60.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       papaparse:
         specifier: ^5.4.1
         version: 5.5.3
@@ -42,6 +42,9 @@ importers:
         specifier: ^2.2.0
         version: 2.6.1
     devDependencies:
+      '@playwright/test':
+        specifier: ^1.60.0
+        version: 1.60.0
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.2.4
@@ -868,6 +871,11 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [win32]
+
+  '@playwright/test@1.60.0':
+    resolution: {integrity: sha512-O71yZIbAh/PxDMNGns37GHBIfrVkEVyn+AXyIa5dOTfb4/xNvRWV+Vv/NMbNCtODB/pO7vLlF2OTmMVLhmr7Ag==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@renovatebot/pep440@4.2.1':
     resolution: {integrity: sha512-2FK1hF93Fuf1laSdfiEmJvSJPVIDHEUTz68D3Fi9s0IZrrpaEcj6pTFBTbYvsgC5du4ogrtf5re7yMMvrKNgkw==}
@@ -2375,6 +2383,11 @@ packages:
 
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
+
+  fsevents@2.3.2:
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
 
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
@@ -3884,6 +3897,16 @@ packages:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
+  playwright-core@1.60.0:
+    resolution: {integrity: sha512-9bW6zvX/m0lEbgTKJ6YppOKx8H3VOPBMOCFh2irXFOT4BbHgrx5hPjwJYLT40Lu+4qtD36qKc/Hn56StUW57IA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.60.0:
+    resolution: {integrity: sha512-hheHdokM8cdqCb0lcE3s+zT4t4W+vvjpGxsZlDnikarzx8tSzMebh3UiFtgqwFwnTnjYQcsyMF8ei2mCO/tpeA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
     engines: {node: '>= 0.4'}
@@ -5351,6 +5374,10 @@ snapshots:
   '@oxc-transform/binding-win32-x64-msvc@0.111.0':
     optional: true
 
+  '@playwright/test@1.60.0':
+    dependencies:
+      playwright: 1.60.0
+
   '@renovatebot/pep440@4.2.1': {}
 
   '@rolldown/binding-android-arm64@1.0.0-rc.1':
@@ -6481,17 +6508,17 @@ snapshots:
 
   cookie@1.1.1: {}
 
-  crewai@1.0.1(@supabase/supabase-js@2.105.1)(axios@1.15.2)(canvas@2.11.2(encoding@0.1.13))(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(ws@8.20.0):
+  crewai@1.0.1(@supabase/supabase-js@2.105.1)(axios@1.15.2)(canvas@2.11.2(encoding@0.1.13))(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(playwright@1.60.0)(ws@8.20.0):
     dependencies:
       '@dqbd/tiktoken': 1.0.22
       '@types/fs-extra': 11.0.4
       chalk: 5.6.2
       commander: 12.1.0
       console-table-printer: 2.15.0
-      embedchain: 0.0.8(@supabase/supabase-js@2.105.1)(canvas@2.11.2(encoding@0.1.13))(encoding@0.1.13)(ignore@5.3.2)(ws@8.20.0)(zod@3.25.76)
+      embedchain: 0.0.8(@supabase/supabase-js@2.105.1)(canvas@2.11.2(encoding@0.1.13))(encoding@0.1.13)(ignore@5.3.2)(playwright@1.60.0)(ws@8.20.0)(zod@3.25.76)
       fs-extra: 11.3.4
       js-yaml: 4.1.1
-      langchain: 0.2.20(@supabase/supabase-js@2.105.1)(axios@1.15.2)(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))(ws@8.20.0)
+      langchain: 0.2.20(@supabase/supabase-js@2.105.1)(axios@1.15.2)(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))(playwright@1.60.0)(ws@8.20.0)
       openai: 4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@4.3.6)
       path: 0.12.7
       sqlite: 5.1.1
@@ -6741,12 +6768,12 @@ snapshots:
 
   electron-to-chromium@1.5.344: {}
 
-  embedchain@0.0.8(@supabase/supabase-js@2.105.1)(canvas@2.11.2(encoding@0.1.13))(encoding@0.1.13)(ignore@5.3.2)(ws@8.20.0)(zod@3.25.76):
+  embedchain@0.0.8(@supabase/supabase-js@2.105.1)(canvas@2.11.2(encoding@0.1.13))(encoding@0.1.13)(ignore@5.3.2)(playwright@1.60.0)(ws@8.20.0)(zod@3.25.76):
     dependencies:
       axios: 1.15.2
       chromadb: 1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))
       jsdom: 22.1.0(canvas@2.11.2(encoding@0.1.13))
-      langchain: 0.0.136(@supabase/supabase-js@2.105.1)(axios@1.15.2)(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))
+      langchain: 0.0.136(@supabase/supabase-js@2.105.1)(axios@1.15.2)(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(playwright@1.60.0)
       openai: 4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)
       pdfjs-dist: 3.11.174(encoding@0.1.13)
       uuid: 9.0.1
@@ -7380,6 +7407,9 @@ snapshots:
   fs.realpath@1.0.0:
     optional: true
 
+  fsevents@2.3.2:
+    optional: true
+
   fsevents@2.3.3:
     optional: true
 
@@ -7895,7 +7925,7 @@ snapshots:
 
   kuler@2.0.0: {}
 
-  langchain@0.0.136(@supabase/supabase-js@2.105.1)(axios@1.15.2)(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13))):
+  langchain@0.0.136(@supabase/supabase-js@2.105.1)(axios@1.15.2)(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(playwright@1.60.0):
     dependencies:
       '@anthropic-ai/sdk': 0.5.10(encoding@0.1.13)
       ansi-styles: 5.2.0
@@ -7924,11 +7954,12 @@ snapshots:
       chromadb: 1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))
       ignore: 5.3.2
       jsdom: 22.1.0(canvas@2.11.2(encoding@0.1.13))
+      playwright: 1.60.0
     transitivePeerDependencies:
       - debug
       - encoding
 
-  langchain@0.2.20(@supabase/supabase-js@2.105.1)(axios@1.15.2)(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))(ws@8.20.0):
+  langchain@0.2.20(@supabase/supabase-js@2.105.1)(axios@1.15.2)(chromadb@1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76)))(encoding@0.1.13)(ignore@5.3.2)(jsdom@22.1.0(canvas@2.11.2(encoding@0.1.13)))(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))(playwright@1.60.0)(ws@8.20.0):
     dependencies:
       '@langchain/core': 0.2.36(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))
       '@langchain/openai': 0.2.11(encoding@0.1.13)(ws@8.20.0)
@@ -7950,6 +7981,7 @@ snapshots:
       chromadb: 1.10.5(encoding@0.1.13)(openai@4.104.0(encoding@0.1.13)(ws@8.20.0)(zod@3.25.76))
       ignore: 5.3.2
       jsdom: 22.1.0(canvas@2.11.2(encoding@0.1.13))
+      playwright: 1.60.0
       ws: 8.20.0
     transitivePeerDependencies:
       - encoding
@@ -8250,7 +8282,7 @@ snapshots:
 
   netmask@2.1.1: {}
 
-  next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+  next@16.2.4(@babel/core@7.29.0)(@playwright/test@1.60.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       '@next/env': 16.2.4
       '@swc/helpers': 0.5.15
@@ -8269,6 +8301,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 16.2.4
       '@next/swc-win32-arm64-msvc': 16.2.4
       '@next/swc-win32-x64-msvc': 16.2.4
+      '@playwright/test': 1.60.0
       sharp: 0.34.5
     transitivePeerDependencies:
       - '@babel/core'
@@ -8624,6 +8657,14 @@ snapshots:
   picomatch@2.3.2: {}
 
   picomatch@4.0.4: {}
+
+  playwright-core@1.60.0: {}
+
+  playwright@1.60.0:
+    dependencies:
+      playwright-core: 1.60.0
+    optionalDependencies:
+      fsevents: 2.3.2
 
   possible-typed-array-names@1.1.0: {}
 
