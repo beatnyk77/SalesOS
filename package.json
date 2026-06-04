@@ -8,18 +8,19 @@
     "pnpm": ">=10.33.0"
   },
   "scripts": {
-    "dev": "pnpm next dev",
+    "dev": "node scripts/validate-env.js && pnpm next dev",
     "build": "pnpm run build:patch-lock",
     "start": "pnpm next start",
     "lint": "pnpm eslint",
     "build:patch-lock": "pnpm install --no-frozen-lockfile && pnpm next build",
     "test:smoke": "playwright test tests/smoke/",
-    "test:smoke:ui": "playwright test tests/smoke/ --ui"
+    "test:smoke:ui": "playwright test tests/smoke/ --ui",
+    "validate-env": "node scripts/validate-env.js"
   },
   "dependencies": {
     "@langchain/langgraph": "^1.2.9",
-    "@supabase/ssr": "^0.10.2",
-    "@supabase/supabase-js": "^2.104.0",
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.107.0",
     "clsx": "^2.1.0",
     "crewai": "^1.0.1",
     "lucide-react": "^0.474.0",
@@ -31,15 +32,15 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.3.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.4",
-    "tailwindcss": "^4",
-    "typescript": "^5",
-    "vercel": "^52.0.0"
+    "eslint": "^10.4.1",
+    "eslint-config-next": "^16.2.7",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^5.9.3",
+    "vercel": "^52.2.1"
   }
 }

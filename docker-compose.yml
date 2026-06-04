@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - EXA_API_KEY=${EXA_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - HUNTER_API_KEY=${HUNTER_API_KEY}
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    depends_on:
+      - supabase
+    
+  supabase:
+    image: supabase/supabase:latest
+    ports:
+      - "54321:54321"  # API
+      - "54322:54322"  # DB
+      - "54323:54323"  # Studio
+      - "54324:54324"  # Inbucket
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - DASHBOARD_USERNAME=supabase
+      - DASHBOARD_PASSWORD=supabase
+      - ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+    volumes:
+      - supabase-data:/var/lib/postgresql/data
+      - ./supabase:/opt/supabase
+
+volumes:
+  supabase-data:
