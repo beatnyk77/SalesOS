@@ -99,6 +99,11 @@ function LeadApprovalCard({ lead, userId }: LeadCardProps) {
             {lead.company_name && ` · ${lead.company_name}`}
             {lead.job_title && ` · ${lead.job_title}`}
           </p>
+          {lead.summary && (
+            <p className="text-xs text-white/40 truncate max-w-[200px] mt-0.5">
+              {lead.summary}
+            </p>
+          )}
         </div>
 
         {/* Expand Toggle */}
