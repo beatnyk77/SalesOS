@@ -133,7 +133,7 @@ The email should be written from 'The SalesOS Team'. Pitch SalesOS, an AI co-fou
   } catch (error) {
     console.warn("LLM generation failed, falling back to template:", error);
     // Fallback to template
-    let opener = `Hi ${firstName}, I've been following ${company}'s work in ${industry}.`;
+    const opener = `Hi ${firstName}, I've been following ${company}'s work in ${industry}.`;
     const body = `${opener}\n\nWe built SalesOS specifically for teams like yours.`;
     return {
       to: lead.email,
