@@ -11,7 +11,7 @@
     "dev": "node scripts/validate-env.js && pnpm next dev",
     "build": "pnpm run build:patch-lock",
     "start": "pnpm next start",
-    "lint": "pnpm eslint",
+    "lint": "next lint",
     "build:patch-lock": "pnpm install --no-frozen-lockfile && pnpm next build",
     "test:smoke": "playwright test tests/smoke/",
     "test:smoke:ui": "playwright test tests/smoke/ --ui",
