@@ -61,12 +61,70 @@ async function getInitialActions(userId: string) {
   return carouselActions;
 }
 
+async function getDashboardStats(userId: string) {
+  const supabase = await createClient();
+
+  // Fetch total leads count
+  const { data: totalLeadsData, error: totalLeadsError } = await supabase
+    .from('leads')
+    .select('id', { count: 'exact' })
+    .eq('user_id', userId);
+
+  const totalLeads = totalLeadsError ? 0 : (totalLeadsData?.length || 0);
+
+  // Fetch active campaigns count (leads that are not rejected)
+  const { data: activeCampaignsData, error: activeCampaignsError } = await supabase
+    .from('leads')
+    .select('id', { count: 'exact' })
+    .eq('user_id', userId)
+    .neq('status', 'rejected');
+
+  const activeCampaigns = activeCampaignsError ? 0 : (activeCampaignsData?.length || 0);
+
+  // Fetch pending approvals count (pending leads + pending email drafts)
+  const { data: pendingLeadsData, error: pendingLeadsError } = await supabase
+    .from('leads')
+    .select('id', { count: 'exact' })
+    .eq('user_id', userId)
+    .eq('status', 'pending');
+
+  const { data: pendingEmailsData, error: pendingEmailsError } = await supabase
+    .from('cold_emails')
+    .select('id', { count: 'exact' })
+    .eq('user_id', userId)
+    .eq('status', 'pending_approval');
+
+  const pendingLeads = pendingLeadsError ? 0 : (pendingLeadsData?.length || 0);
+  const pendingEmails = pendingEmailsError ? 0 : (pendingEmailsData?.length || 0);
+  const pendingApprovals = pendingLeads + pendingEmails;
+
+  // Fetch weekly actions count (from last 7 days)
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const { data: weeklyActionsData, error: weeklyActionsError } = await supabase
+    .from('agent_audit_trail')
+    .select('id', { count: 'exact' })
+    .eq('user_id', userId)
+    .gte('timestamp', oneWeekAgo);
+
+  const weeklyActions = weeklyActionsError ? 0 : (weeklyActionsData?.length || 0);
+
+  return {
+    totalLeads,
+    activeCampaigns,
+    pendingApprovals,
+    weeklyActions
+  };
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const userId = user?.id || '';
 
-  const initialActions = await getInitialActions(userId);
+  const [initialActions, stats] = await Promise.all([
+    getInitialActions(userId),
+    getDashboardStats(userId)
+  ]);
 
   return (
     <Suspense fallback={<div>Loading…</div>}>
@@ -74,12 +132,7 @@ export default async function DashboardPage() {
         {/* Subscribe to realtime changes so the UI updates when audit trail mutates */}
         <DashboardClient
           initialActions={initialActions}
-          stats={{
-            totalLeads: 0, // replace with actual counts or fetch server-side
-            activeCampaigns: 0,
-            pendingApprovals: initialActions.length,
-            weeklyActions: 0,
-          }}
+          stats={stats}
           velocity={[]}
         />
       </div>
