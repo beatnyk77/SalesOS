@@ -9,10 +9,9 @@
   },
   "scripts": {
     "dev": "node scripts/validate-env.js && pnpm next dev",
-    "build": "pnpm run build:patch-lock",
-    "start": "pnpm next start",
+    "build": "next build",
+    "start": "next start",
     "lint": "eslint .",
-    "build:patch-lock": "pnpm install --no-frozen-lockfile && pnpm next build",
     "test:smoke": "playwright test tests/smoke/",
     "test:smoke:ui": "playwright test tests/smoke/ --ui",
     "validate-env": "node scripts/validate-env.js"
@@ -37,8 +36,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
-    "@eslint/eslintrc": "^3.3.1",
-    "eslint": "^10.4.1",
+    "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.7",
     "tailwindcss": "^4.3.0",
     "typescript": "^5.9.3",
