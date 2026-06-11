@@ -110,8 +110,14 @@ async function logToLedger(
 ): Promise<void> {
   try {
     const { createClient } = await import('@supabase/supabase-js');
-    const supabaseUrl = process.env.SUPABASE_URL!;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    // SUPABASE_URL is auto-injected in Supabase Edge Functions (Deno);
+    // the Next.js runtime only has the NEXT_PUBLIC_ variant.
+    const supabaseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('[runner] Missing Supabase env vars; skipping audit trail write.');
+      return;
+    }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
